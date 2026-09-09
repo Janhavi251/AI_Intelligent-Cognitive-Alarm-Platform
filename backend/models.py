@@ -25,6 +25,7 @@ class User(Base):
     alarms         = relationship("Alarm", back_populates="user", cascade="all, delete-orphan")
     challenge_logs = relationship("ChallengeLog", back_populates="user", cascade="all, delete-orphan")
     achievements   = relationship("Achievement", back_populates="user", cascade="all, delete-orphan")
+    habit_logs     = relationship("HabitLog", back_populates="user", cascade="all, delete-orphan")
 
 
 class Alarm(Base):
@@ -69,7 +70,16 @@ class ChallengeLog(Base):
     user = relationship("User", back_populates="challenge_logs")
 
 
-class Achievement(Base):
+class HabitLog(Base):
+    __tablename__ = "habit_logs"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    user_id    = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    habit_name = Column(String(150), nullable=False)
+    completed  = Column(Boolean, nullable=False, default=False)
+    log_date   = Column(DateTime(timezone=True), server_default=func.current_date())
+
+    user = relationship("User", back_populates="habit_logs")
     __tablename__ = "achievements"
 
     id          = Column(Integer, primary_key=True, index=True)

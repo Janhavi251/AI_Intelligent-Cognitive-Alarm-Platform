@@ -7,13 +7,13 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
 try:
     from database import get_db, engine
-    from models import User, Alarm, ChallengeLog, Achievement, Base
+    from models import User, Alarm, ChallengeLog, HabitLog, Achievement, Base
     from schemas import ChallengeResponse, ChallengeVerifyRequest, ChallengeVerifyResponse, AchievementItem, LearningTrendResponse, WakefulnessLogRequest, BehavioralAnalyticsResponse
     from challenge_generator import generate_cognitive_challenge
     from auth import hash_password, verify_password, create_token
 except ImportError:
     from backend.database import get_db, engine
-    from backend.models import User, Alarm, ChallengeLog, Achievement, Base
+    from backend.models import User, Alarm, ChallengeLog, HabitLog, Achievement, Base
     from backend.schemas import ChallengeResponse, ChallengeVerifyRequest, ChallengeVerifyResponse, AchievementItem, LearningTrendResponse, WakefulnessLogRequest, BehavioralAnalyticsResponse
     from backend.challenge_generator import generate_cognitive_challenge
     from backend.auth import hash_password, verify_password, create_token
@@ -362,8 +362,7 @@ def verify_challenge(data: ChallengeVerifyRequest, db: Session = Depends(get_db)
             difficulty=data.difficulty or "medium",
             success=is_correct,
             score=score,
-            time_taken_seconds=data.time_taken_seconds,
-            wakefulness_score=data.wakefulness_score
+            time_taken_seconds=data.time_taken_seconds
         )
         db.add(log)
         db.commit()
@@ -1094,6 +1093,90 @@ def get_behavioral_analytics(user_id: int, db: Session = Depends(get_db)):
         },
         behavioral_nudges=nudges
     )
+
+
+# ══════════════════════════════════════════════════════════════
+#  HABIT ADHERENCE SCORING
+# ══════════════════════════════════════════════════════════════
+
+class HabitLogRequest(BaseModel):
+    user_id:    int
+    habit_name: str
+    completed:  bool
+
+
+@app.post("/habits/log")
+def log_habit(data: HabitLogRequest, db: Session = Depends(get_db)):
+    """Save or update today's habit completion state for a user."""
+    from datetime import date as dt_date
+    from sqlalchemy import cast, Date as SADate
+
+    today = dt_date.today()
+    existing = db.query(HabitLog).filter(
+        HabitLog.user_id    == data.user_id,
+        HabitLog.habit_name == data.habit_name,
+        cast(HabitLog.log_date, SADate) == today
+    ).first()
+
+    if existing:
+        existing.completed = data.completed
+    else:
+        existing = HabitLog(
+            user_id=data.user_id,
+            habit_name=data.habit_name,
+            completed=data.completed
+        )
+        db.add(existing)
+
+    db.commit()
+    db.refresh(existing)
+    return {"success": True, "habit": data.habit_name, "completed": data.completed}
+
+
+@app.get("/habits/{user_id}")
+def get_habit_adherence(user_id: int, db: Session = Depends(get_db)):
+    """Returns today's habit state + 7-day adherence score for the user."""
+    from datetime import date as dt_date, timedelta
+    from sqlalchemy import cast, Date as SADate
+
+    today = dt_date.today()
+
+    # Today's habits
+    today_logs = db.query(HabitLog).filter(
+        HabitLog.user_id == user_id,
+        cast(HabitLog.log_date, SADate) == today
+    ).all()
+
+    today_state = {log.habit_name: log.completed for log in today_logs}
+
+    # 7-day adherence
+    seven_days_ago = today - timedelta(days=7)
+    week_logs = db.query(HabitLog).filter(
+        HabitLog.user_id == user_id,
+        cast(HabitLog.log_date, SADate) >= seven_days_ago,
+        HabitLog.completed == True
+    ).all()
+
+    # Group by date to calculate daily completion
+    from collections import defaultdict
+    days_with_completions = defaultdict(int)
+    for log in week_logs:
+        day = log.log_date.date() if hasattr(log.log_date, 'date') else log.log_date
+        days_with_completions[str(day)] += 1
+
+    days_any_completed = len(days_with_completions)
+    adherence_pct = round((days_any_completed / 7) * 100)
+
+    total_completed_today = sum(1 for v in today_state.values() if v)
+
+    return {
+        "user_id":          user_id,
+        "today":            str(today),
+        "today_state":      today_state,
+        "completed_today":  total_completed_today,
+        "adherence_7day_pct": adherence_pct,
+        "days_active":      days_any_completed
+    }
 
 
 # ── Health check ─────────────────────────────────────────────

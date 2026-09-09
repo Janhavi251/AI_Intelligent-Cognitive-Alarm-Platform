@@ -2346,6 +2346,21 @@ function toggleHabitItem(itemEl) {
     itemEl.classList.add('completed');
     if (checkbox) checkbox.checked = true;
   }
+
+  // Save to backend
+  const nameEl = itemEl.querySelector('.hs-name');
+  const habitName = nameEl ? nameEl.textContent.trim() : 'Unknown Habit';
+  const nowCompleted = itemEl.classList.contains('completed');
+  const userId = (user && user.id) ? parseInt(user.id) : 1;
+
+  fetch('http://localhost:8000/habits/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user_id: userId, habit_name: habitName, completed: nowCompleted })
+  })
+  .then(r => r.json())
+  .then(() => loadHabitAdherence())
+  .catch(() => {});
   
   updateHabitScoreProgress();
 }
@@ -2390,6 +2405,47 @@ function loadHabitState() {
         } else {
           el.classList.remove('completed');
           if (checkbox) checkbox.checked = false;
+        }
+      });
+      updateHabitScoreProgress();
+    }
+  } catch (e) {}
+  // Also load from backend
+  loadHabitAdherence();
+}
+
+async function loadHabitAdherence() {
+  const userId = (user && user.id) ? parseInt(user.id) : 1;
+  try {
+    const res = await fetch(`http://localhost:8000/habits/${userId}`);
+    if (!res.ok) return;
+    const data = await res.json();
+
+    // Update adherence % in the habit card
+    const weekPct = data.adherence_7day_pct ?? 0;
+    const percentEl = document.getElementById('habit-progress-percent');
+    const fillEl = document.getElementById('habit-progress-fill');
+    const subtextEl = document.getElementById('habit-subtext');
+
+    if (percentEl) percentEl.textContent = `${weekPct}%`;
+    if (fillEl) fillEl.style.width = `${weekPct}%`;
+    if (subtextEl) subtextEl.textContent = `Active ${data.days_active} of last 7 days · ${data.completed_today} habits done today`;
+
+    // Restore today's checkbox state from DB
+    if (data.today_state && Object.keys(data.today_state).length > 0) {
+      document.querySelectorAll('.hs-item').forEach(el => {
+        const nameEl = el.querySelector('.hs-name');
+        if (!nameEl) return;
+        const name = nameEl.textContent.trim();
+        const checkbox = el.querySelector('.hs-checkbox');
+        if (name in data.today_state) {
+          if (data.today_state[name]) {
+            el.classList.add('completed');
+            if (checkbox) checkbox.checked = true;
+          } else {
+            el.classList.remove('completed');
+            if (checkbox) checkbox.checked = false;
+          }
         }
       });
       updateHabitScoreProgress();
