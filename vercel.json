@@ -6,7 +6,7 @@
       "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
-        "includeFiles": ["backend/**", "api/backend/**"]
+        "includeFiles": "backend/**"
       }
     },
     {
@@ -18,11 +18,6 @@
       "use": "@vercel/static"
     }
   ],
-  "functions": {
-    "api/index.py": {
-      "includeFiles": ["backend/**", "api/backend/**"]
-    }
-  },
   "routes": [
     { "src": "/api/(.*)",            "dest": "api/index.py" },
     { "src": "/health",              "dest": "api/index.py" },
