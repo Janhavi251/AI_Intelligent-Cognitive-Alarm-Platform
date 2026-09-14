@@ -171,7 +171,15 @@ class SigninRequest(BaseModel):
     password: str
 
 
+@app.middleware("http")
+async def vercel_path_rewrite_middleware(request: Request, call_next):
+    path = request.scope.get("path", "")
+    if path.startswith("/api/index.py"):
+        request.scope["path"] = path.replace("/api/index.py", "", 1) or "/"
+    return await call_next(request)
+
 @app.post("/auth/signup")
+@app.post("/api/auth/signup")
 def signup(data: SignupRequest, request: Request, db: Session = Depends(get_db)):
     check_rate_limit(request.client.host if request.client else "unknown")
     # Sanitise inputs
@@ -203,6 +211,7 @@ def signup(data: SignupRequest, request: Request, db: Session = Depends(get_db))
 
 
 @app.post("/auth/signin")
+@app.post("/api/auth/signin")
 def signin(data: SigninRequest, request: Request, db: Session = Depends(get_db)):
     check_rate_limit(request.client.host if request.client else "unknown")
     data.email = data.email.strip().lower()
@@ -219,6 +228,7 @@ def signin(data: SigninRequest, request: Request, db: Session = Depends(get_db))
         "user": {"id": user.id, "full_name": user.full_name,
                  "email": user.email, "role": user.role}
     }
+
 
 
 @app.get("/auth/google")
