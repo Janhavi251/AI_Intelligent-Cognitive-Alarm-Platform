@@ -2028,9 +2028,68 @@ def get_recommendations(user_id: int, db: Session = Depends(get_db), current_use
 
 
 
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 
-# ── Health check ─────────────────────────────────────────────
+# ── Static File & Page Handlers ────────────────────────────────
+@app.get("/{filename}.css")
+def get_css(filename: str):
+    for p in [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", f"{filename}.css")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", f"{filename}.css")),
+        os.path.abspath(f"{filename}.css")
+    ]:
+        if os.path.exists(p):
+            return FileResponse(p, media_type="text/css")
+    return Response(status_code=404)
+
+@app.get("/{filename}.js")
+def get_js(filename: str):
+    for p in [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", f"{filename}.js")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", f"{filename}.js")),
+        os.path.abspath(f"{filename}.js")
+    ]:
+        if os.path.exists(p):
+            return FileResponse(p, media_type="application/javascript")
+    return Response(status_code=404)
+
+@app.get("/login")
+@app.get("/login.html")
+def get_login_page():
+    for p in [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "login.html")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "login.html")),
+        os.path.abspath("login.html")
+    ]:
+        if os.path.exists(p):
+            return FileResponse(p)
+    return Response(status_code=404)
+
+@app.get("/dashboard")
+@app.get("/dashboard.html")
+def get_dashboard_page():
+    for p in [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "dashboard.html")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "dashboard.html")),
+        os.path.abspath("dashboard.html")
+    ]:
+        if os.path.exists(p):
+            return FileResponse(p)
+    return Response(status_code=404)
+
+@app.get("/challenge")
+@app.get("/challenge.html")
+def get_challenge_page():
+    for p in [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "challenge.html")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "challenge.html")),
+        os.path.abspath("challenge.html")
+    ]:
+        if os.path.exists(p):
+            return FileResponse(p)
+    return Response(status_code=404)
+
+# ── Health check & Root ─────────────────────────────────────────
 @app.get("/api")
 def api_status():
     return {"status": "Wellspring API is running"}
@@ -2045,6 +2104,7 @@ def root():
         if os.path.exists(p):
             return FileResponse(p)
     return {"status": "Wellspring API is running"}
+
 
 
 
