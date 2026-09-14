@@ -56,45 +56,84 @@ function checkStrength(){
   }
 }
 
-function handleSignin(e){
+// ── Sign In → calls FastAPI backend ──────────────────────────
+async function handleSignin(e){
   e.preventDefault();
-  // Instead of an alert, we can route directly to the user dashboard as requested in the HTML, 
-  // or keep the alert as provided. I'll use the user's provided alert, but also redirect to the dashboard for the demo.
-  alert("Signing in with provider: LOCAL\n(This is a UI demo — wire this up to your auth API.)");
-  window.location.href = 'index.html?role=user';
+  const email    = document.getElementById('si-email').value.trim();
+  const password = document.getElementById('si-pass').value;
+  const btn      = e.target.querySelector('button[type="submit"]');
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
+
+  try {
+    const res  = await fetch('http://localhost:8000/auth/signin', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.detail || 'Sign in failed. Check your email and password.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Sign in'; }
+      return false;
+    }
+
+    // Persist JWT + full user object for dashboard
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user',  JSON.stringify(data.user));
+    window.location.href = 'dashboard.html';
+
+  } catch (err) {
+    alert('Cannot connect to server. Make sure the backend is running on port 8000.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign in'; }
+  }
   return false;
 }
 
-function handleSignup(e){
+// ── Sign Up → calls FastAPI backend ──────────────────────────
+async function handleSignup(e){
   e.preventDefault();
-  const email = document.getElementById('su-email').value.trim().toLowerCase();
+  const full_name = document.getElementById('su-name').value.trim();
+  const email     = document.getElementById('su-email').value.trim().toLowerCase();
+  const password  = document.getElementById('su-pass').value;
+  const role      = document.getElementById('su-role').value;
+  const btn       = e.target.querySelector('button[type="submit"]');
+
   if(takenEmails.includes(email)){
     checkEmailUnique();
     return false;
   }
-  const name = document.getElementById('su-name').value;
-  const role = document.getElementById('su-role').value;
-  alert(
-    "Account payload (demo):\n" +
-    "name: " + name + "\n" +
-    "email: " + email + "\n" +
-    "password: [encrypted client-side placeholder]\n" +
-    "role: " + role + "\n" +
-    "provider: LOCAL"
-  );
-  
-  // Route to the respective dashboard
-  let targetRole = 'user';
-  if (role === 'wellness_coach') targetRole = 'coach';
-  if (role === 'admin') targetRole = 'admin';
-  window.location.href = `index.html?role=${targetRole}`;
-  
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Creating account…'; }
+
+  try {
+    const res  = await fetch('http://localhost:8000/auth/signup', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ full_name, email, password, role })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.detail || 'Sign up failed. Try a different email.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Create account'; }
+      return false;
+    }
+
+    // Persist JWT + full user object for dashboard
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user',  JSON.stringify(data.user));
+    window.location.href = 'dashboard.html';
+
+  } catch (err) {
+    alert('Cannot connect to server. Make sure the backend is running on port 8000.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Create account'; }
+  }
   return false;
 }
 
+// ── Google OAuth ──────────────────────────────────────────────
 function handleOAuth(mode){
-  document.getElementById('providerNote') && (document.getElementById('providerNote').innerHTML =
-    "Provider set to <b>GOOGLE</b> — role still applies, password field is skipped.");
-  alert("Redirecting to Google OAuth for " + mode + "...\n(Demo — connect this to your real OAuth flow.)");
-  window.location.href = 'index.html?role=user';
+  window.location.href = 'http://localhost:8000/auth/google';
 }

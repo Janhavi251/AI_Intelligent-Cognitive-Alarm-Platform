@@ -60,6 +60,61 @@
         Hello, <strong id="loggedInUser" style="color:var(--text-dark);"></strong>
       </span>
 
+      <!-- ── NOTIFICATION BELL ─────────────────────────── -->
+      <div class="notif-bell-wrap" id="notifBellWrap">
+        <button class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotifPanel()" title="Notifications">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+        </button>
+
+        <!-- Notification Dropdown Panel -->
+        <div class="notif-panel" id="notifPanel" style="display:none;">
+          <!-- Panel Header -->
+          <div class="notif-panel-header">
+            <div>
+              <span class="notif-panel-title">Notifications</span>
+              <span class="notif-panel-sub" id="notif-unread-count">Loading...</span>
+            </div>
+            <button class="notif-mark-all" onclick="markAllNotifRead()">Mark all read</button>
+          </div>
+
+          <!-- Type Filter Tabs -->
+          <div class="notif-tabs" id="notif-tabs">
+            <button class="notif-tab active" data-type="all" onclick="filterNotif('all',this)">All</button>
+            <button class="notif-tab" data-type="bedtime"      onclick="filterNotif('bedtime',this)">🌙 Bedtime</button>
+            <button class="notif-tab" data-type="wakeup"       onclick="filterNotif('wakeup',this)">⏰ Wake-up</button>
+            <button class="notif-tab" data-type="habit"        onclick="filterNotif('habit',this)">📋 Habit</button>
+            <button class="notif-tab" data-type="challenge"    onclick="filterNotif('challenge',this)">🧩 Challenge</button>
+            <button class="notif-tab" data-type="progress"     onclick="filterNotif('progress',this)">📊 Progress</button>
+            <button class="notif-tab" data-type="announcement" onclick="filterNotif('announcement',this)">📢 Platform</button>
+          </div>
+
+          <!-- Notification List -->
+          <div class="notif-list" id="notif-list">
+            <div class="notif-empty">Loading notifications...</div>
+          </div>
+
+          <!-- Panel Footer -->
+          <div class="notif-panel-footer">
+            <button class="notif-refresh-btn" onclick="loadNotifications()">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              Refresh
+            </button>
+            <span id="notif-generated-at" style="font-size:0.72rem;color:var(--muted);">—</span>
+          </div>
+        </div>
+      </div>
+      <!-- ── END NOTIFICATION BELL ──────────────────────── -->
+
       <button class="btn-logout" onclick="signOut()"
         style="color: var(--color-danger); border-color: var(--color-danger);">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
@@ -118,6 +173,54 @@
               </span>
               Alarm History
             </button>
+            <button class="sidebar-item" onclick="showSubSection('user','scoring',this)">
+              <span class="sidebar-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+              </span>
+              Performance Scoring
+            </button>
+            <button class="sidebar-item" onclick="showSubSection('user','recommendations',this)">
+              <span class="sidebar-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </span>
+              Recommendations
+            </button>
+            <button class="sidebar-item" onclick="showSubSection('user','reports',this)">
+              <span class="sidebar-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </span>
+              Reports & Export
+            </button>
+            <button class="sidebar-item" onclick="showSubSection('user','sessions',this)">
+              <span class="sidebar-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                  <circle cx="12" cy="16" r="2"/>
+                </svg>
+              </span>
+              My Sessions
+              <span class="sidebar-badge" id="user-sessions-badge" style="display:none;">0</span>
+            </button>
           </nav>
 
           <!-- COACH sidebar -->
@@ -155,6 +258,18 @@
                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                 </svg></span>
               Sleep Reports
+            </button>
+            <button class="sidebar-item" onclick="showSubSection('coach','directory',this)">
+              <span class="sidebar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  <line x1="19" y1="8" x2="19" y2="14"/>
+                  <line x1="22" y1="11" x2="16" y2="11"/>
+                </svg></span>
+              Client Directory
             </button>
           </nav>
 
@@ -981,107 +1096,625 @@
                   </div>
                 </div>
               </div>
+
+              <!-- ═══════════════════════════════════════════════════════
+                   SCORING DASHBOARD — Challenge · Productivity · Sleep
+                   ═══════════════════════════════════════════════════════ -->
+              <div class="dashboard-card grid-col-span-3 scoring-card-container sub-card" data-role="user" data-sub="scoring" id="scoring-dashboard-card">
+
+                <!-- Card Header -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                  <div>
+                    <h3 style="margin:0;font-size:1.2rem;display:flex;align-items:center;gap:10px;">
+                      <span>🎯 Performance Scoring Dashboard</span>
+                    </h3>
+                    <p style="margin:4px 0 0;font-size:0.82rem;color:var(--muted);">
+                      Real-time scores across Challenge Completion · Productivity · Sleep Routine
+                    </p>
+                  </div>
+                  <button type="button" class="score-refresh-btn" onclick="loadAllScores()" title="Refresh Scores">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                      stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                      <polyline points="23 4 23 10 17 10"></polyline>
+                      <polyline points="1 20 1 14 7 14"></polyline>
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Refresh
+                  </button>
+                </div>
+
+                <!-- Four Score Pillars -->
+                <div class="score-pillars-grid" style="grid-template-columns: repeat(4, 1fr);">
+
+                  <!-- Pillar 1: Challenge Completion Score -->
+                  <div class="score-pillar-card" id="score-challenge-pillar">
+                    <div class="score-pillar-top">
+                      <div class="score-pillar-icon" style="background:#eff6ff;color:#2563eb;">🧠</div>
+                      <div>
+                        <div class="score-pillar-label">Challenge Completion</div>
+                        <div class="score-pillar-sub">Accuracy · Speed · Difficulty</div>
+                      </div>
+                    </div>
+                    <div class="score-ring-wrap">
+                      <svg class="score-ring-svg" viewBox="0 0 80 80">
+                        <circle class="score-ring-bg" cx="40" cy="40" r="32"></circle>
+                        <circle class="score-ring-fill score-ring-blue" id="score-ring-challenge"
+                          cx="40" cy="40" r="32" stroke-dasharray="0 201" stroke-dashoffset="0"></circle>
+                      </svg>
+                      <div class="score-ring-inner">
+                        <div class="score-ring-num" id="score-challenge-val">—</div>
+                        <div class="score-ring-label">/ 100</div>
+                      </div>
+                    </div>
+                    <div class="score-grade-badge" id="score-challenge-grade">—</div>
+                    <ul class="score-detail-list">
+                      <li><span>Accuracy Rate</span><strong id="sc-accuracy">—</strong></li>
+                      <li><span>Total Points Earned</span><strong id="sc-points">—</strong></li>
+                      <li><span>Avg Solve Speed</span><strong id="sc-speed">—</strong></li>
+                      <li><span>Challenges Attempted</span><strong id="sc-attempts">—</strong></li>
+                    </ul>
+                  </div>
+
+                  <!-- Pillar 2: Productivity Score -->
+                  <div class="score-pillar-card" id="score-productivity-pillar">
+                    <div class="score-pillar-top">
+                      <div class="score-pillar-icon" style="background:#f0fdf4;color:#16a34a;">⚡</div>
+                      <div>
+                        <div class="score-pillar-label">Productivity Score</div>
+                        <div class="score-pillar-sub">Challenge · Habit · Sleep</div>
+                      </div>
+                    </div>
+                    <div class="score-ring-wrap">
+                      <svg class="score-ring-svg" viewBox="0 0 80 80">
+                        <circle class="score-ring-bg" cx="40" cy="40" r="32"></circle>
+                        <circle class="score-ring-fill score-ring-green" id="score-ring-productivity"
+                          cx="40" cy="40" r="32" stroke-dasharray="0 201" stroke-dashoffset="0"></circle>
+                      </svg>
+                      <div class="score-ring-inner">
+                        <div class="score-ring-num" id="score-productivity-val">—</div>
+                        <div class="score-ring-label">/ 100</div>
+                      </div>
+                    </div>
+                    <div class="score-grade-badge score-grade-green" id="score-productivity-grade">—</div>
+                    <div class="score-breakdown">
+                      <div class="score-breakdown-label">Component Breakdown</div>
+                      <div class="score-bar-row">
+                        <span>Challenge (40%)</span>
+                        <div class="score-bar-track"><div class="score-bar-fill score-bar-blue" id="sp-challenge-bar" style="width:0%"></div></div>
+                        <strong id="sp-challenge-pct">—</strong>
+                      </div>
+                      <div class="score-bar-row">
+                        <span>Habit Score (35%)</span>
+                        <div class="score-bar-track"><div class="score-bar-fill score-bar-green" id="sp-habit-bar" style="width:0%"></div></div>
+                        <strong id="sp-habit-pct">—</strong>
+                      </div>
+                      <div class="score-bar-row">
+                        <span>Sleep (25%)</span>
+                        <div class="score-bar-track"><div class="score-bar-fill score-bar-purple" id="sp-sleep-bar" style="width:0%"></div></div>
+                        <strong id="sp-sleep-pct">—</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Pillar 3: Sleep Routine Score -->
+                  <div class="score-pillar-card" id="score-sleep-pillar">
+                    <div class="score-pillar-top">
+                      <div class="score-pillar-icon" style="background:#fdf4ff;color:#9333ea;">🌙</div>
+                      <div>
+                        <div class="score-pillar-label">Sleep Routine Score</div>
+                        <div class="score-pillar-sub">On-Time · Puzzle Solved · Delay</div>
+                      </div>
+                    </div>
+                    <div class="score-ring-wrap">
+                      <svg class="score-ring-svg" viewBox="0 0 80 80">
+                        <circle class="score-ring-bg" cx="40" cy="40" r="32"></circle>
+                        <circle class="score-ring-fill score-ring-purple" id="score-ring-sleep"
+                          cx="40" cy="40" r="32" stroke-dasharray="0 201" stroke-dashoffset="0"></circle>
+                      </svg>
+                      <div class="score-ring-inner">
+                        <div class="score-ring-num" id="score-sleep-val">—</div>
+                        <div class="score-ring-label">/ 100</div>
+                      </div>
+                    </div>
+                    <div class="score-grade-badge score-grade-purple" id="score-sleep-grade">—</div>
+                    <ul class="score-detail-list">
+                      <li><span>On-Time Dismissals</span><strong id="ss-ontime">—</strong></li>
+                      <li><span>Puzzle Solved Rate</span><strong id="ss-puzzle">—</strong></li>
+                      <li><span>Avg Delay</span><strong id="ss-delay">—</strong></li>
+                      <li><span>Total Alarms Logged</span><strong id="ss-total">—</strong></li>
+                    </ul>
+                  </div>
+
+                  <!-- Pillar 4: Habit Score (Weighted Model) -->
+                  <div class="score-pillar-card" id="score-habit-pillar">
+                    <div class="score-pillar-top">
+                      <div class="score-pillar-icon" style="background:#fff7ed;color:#ea580c;">🔥</div>
+                      <div>
+                        <div class="score-pillar-label">Habit Score</div>
+                        <div class="score-pillar-sub">Weighted Scoring Model</div>
+                      </div>
+                    </div>
+                    <div class="score-ring-wrap">
+                      <svg class="score-ring-svg" viewBox="0 0 80 80">
+                        <circle class="score-ring-bg" cx="40" cy="40" r="32"></circle>
+                        <circle class="score-ring-fill" id="score-ring-habit"
+                          cx="40" cy="40" r="32" stroke-dasharray="0 201" stroke-dashoffset="0"
+                          style="stroke:#ea580c;stroke-width:8;fill:none;stroke-linecap:round;transition:stroke-dasharray 1s cubic-bezier(0.4,0,0.2,1);"></circle>
+                      </svg>
+                      <div class="score-ring-inner">
+                        <div class="score-ring-num" id="score-habit-val">—</div>
+                        <div class="score-ring-label">/ 100</div>
+                      </div>
+                    </div>
+                    <div class="score-grade-badge" id="score-habit-grade">—</div>
+                    <div class="score-breakdown">
+                      <div class="score-breakdown-label">Weighted Components</div>
+                      <div class="score-bar-row">
+                        <span>Wake-Up (35%)</span>
+                        <div class="score-bar-track"><div class="score-bar-fill" id="sh-wakeup-bar" style="width:0%;background:#2563eb;"></div></div>
+                        <strong id="sh-wakeup-pct">—</strong>
+                      </div>
+                      <div class="score-bar-row">
+                        <span>Challenge (25%)</span>
+                        <div class="score-bar-track"><div class="score-bar-fill" id="sh-challenge-bar" style="width:0%;background:#16a34a;"></div></div>
+                        <strong id="sh-challenge-pct">—</strong>
+                      </div>
+                      <div class="score-bar-row">
+                        <span>Snooze↓ (20%)</span>
+                        <div class="score-bar-track"><div class="score-bar-fill" id="sh-snooze-bar" style="width:0%;background:#ea580c;"></div></div>
+                        <strong id="sh-snooze-pct">—</strong>
+                      </div>
+                      <div class="score-bar-row">
+                        <span>Adherence (20%)</span>
+                        <div class="score-bar-track"><div class="score-bar-fill" id="sh-adherence-bar" style="width:0%;background:#9333ea;"></div></div>
+                        <strong id="sh-adherence-pct">—</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                </div><!-- /score-pillars-grid -->
+
+                <!-- Overall Score Summary Bar -->
+                <div class="score-summary-bar" id="score-summary-bar">
+                  <div class="score-summary-icon">🏅</div>
+                  <div class="score-summary-text">
+                    <span class="score-summary-title" id="score-overall-label">Loading your scores...</span>
+                    <span class="score-summary-sub">Scores update automatically after each alarm dismissal and challenge completion.</span>
+                  </div>
+                  <div class="score-summary-right">
+                    <span class="score-summary-tag" id="score-overall-grade-tag">—</span>
+                  </div>
+                </div>
+
+              </div><!-- /scoring-dashboard-card -->
+
+              <!-- ═══════════════════════════════════════════════════════
+                   RECOMMENDATION ENGINE CARD
+                   ═══════════════════════════════════════════════════════ -->
+              <div class="dashboard-card grid-col-span-3 sub-card rec-engine-card" data-role="user" data-sub="recommendations" id="rec-engine-card" style="display:none;">
+
+                <!-- Card Header -->
+                <div class="rec-header">
+                  <div>
+                    <h3 style="margin:0;font-size:1.2rem;display:flex;align-items:center;gap:10px;">
+                      <span>💡 Personalised Recommendation Engine</span>
+                    </h3>
+                    <p style="margin:4px 0 0;font-size:0.82rem;color:var(--muted);">
+                      AI-driven insights across Sleep · Wake-up · Habit · Productivity · Challenge
+                    </p>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="rec-priority-chip" id="rec-high-count-chip" style="display:none;"></span>
+                    <button type="button" class="score-refresh-btn" onclick="loadRecommendations()" title="Refresh">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                        <polyline points="23 4 23 10 17 10"/>
+                        <polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Loading state -->
+                <div id="rec-loading" style="text-align:center;padding:40px 0;color:var(--muted);font-size:0.9rem;">
+                  <div style="font-size:2rem;margin-bottom:10px;">🔄</div>
+                  Loading your personalised recommendations...
+                </div>
+
+                <!-- Pillars container -->
+                <div class="rec-pillars-grid" id="rec-pillars-grid" style="display:none;">
+                  <!-- Rendered by JS -->
+                </div>
+
+                <!-- Generated-at footer -->
+                <div class="rec-footer" id="rec-footer" style="display:none;">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <span id="rec-generated-at">—</span>
+                </div>
+
+              </div><!-- /rec-engine-card -->
+
+              <!-- ═══════════════════════════════════════════════════════
+                   REPORTS & EXPORT SYSTEM
+                   ═══════════════════════════════════════════════════════ -->
+              <div class="dashboard-card grid-col-span-3 sub-card" data-role="user" data-sub="reports" id="reports-card" style="display:none;flex-direction:column;gap:0;">
+
+                <!-- Header -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+                  <div>
+                    <h3 style="margin:0;font-size:1.2rem;display:flex;align-items:center;gap:10px;border:none;padding:0;">
+                      📊 Reports & Export
+                    </h3>
+                    <p style="margin:4px 0 0;font-size:0.82rem;color:var(--muted);">
+                      Personal performance reports — Habit · Wake-up · Challenge · Productivity · Sleep
+                    </p>
+                  </div>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button type="button" class="btn-report-export" id="btn-export-pdf" onclick="exportReportPDF()">
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/>
+                      </svg>
+                      Export PDF
+                    </button>
+                    <button type="button" class="btn-report-export btn-report-excel" onclick="exportReportExcel('all', this)">
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+                      </svg>
+                      Export Excel
+                    </button>
+                    <button type="button" class="score-refresh-btn" onclick="loadReports()">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                      </svg>
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Loading state -->
+                <div id="reports-loading" style="text-align:center;padding:40px;color:var(--muted);">
+                  <div style="font-size:2rem;margin-bottom:10px;">📊</div>
+                  Loading your reports...
+                </div>
+
+                <!-- Report Cards Grid -->
+                <div id="reports-grid" style="display:none;gap:20px;">
+
+                  <!-- Row 1: Habit + Wake-up side by side -->
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+
+                    <!-- Habit Report -->
+                    <div class="report-card" id="report-habit">
+                      <div class="report-card-header">
+                        <div class="report-card-icon" style="background:#dcfce7;color:#16a34a;">📋</div>
+                        <div>
+                          <div class="report-card-title">Habit Adherence</div>
+                          <div class="report-card-sub">Last 7 days</div>
+                        </div>
+                        <button class="btn-report-dl" onclick="exportReportExcel('habit', this)" title="Download CSV">⬇</button>
+                      </div>
+                      <div class="report-big-num" id="rpt-habit-pct">—</div>
+                      <div class="report-big-label">Completion Rate</div>
+                      <div class="report-bar-wrap">
+                        <div class="report-bar-fill" id="rpt-habit-bar" style="width:0%;background:#16a34a;"></div>
+                      </div>
+                      <ul class="report-stats-list">
+                        <li><span>Habits Completed</span><strong id="rpt-habit-done">—</strong></li>
+                        <li><span>Total Logged</span><strong id="rpt-habit-total">—</strong></li>
+                        <li><span>Trend</span><strong id="rpt-habit-trend">—</strong></li>
+                      </ul>
+                    </div>
+
+                    <!-- Wake-up Report -->
+                    <div class="report-card" id="report-wakeup">
+                      <div class="report-card-header">
+                        <div class="report-card-icon" style="background:#fef3c7;color:#d97706;">⏰</div>
+                        <div>
+                          <div class="report-card-title">Wake-up Pattern</div>
+                          <div class="report-card-sub">This week</div>
+                        </div>
+                        <button class="btn-report-dl" onclick="exportReportExcel('wakeup', this)" title="Download CSV">⬇</button>
+                      </div>
+                      <div class="report-big-num" id="rpt-wake-time">—</div>
+                      <div class="report-big-label">Avg Wake Time</div>
+                      <div class="report-bar-wrap">
+                        <div class="report-bar-fill" id="rpt-wake-bar" style="width:0%;background:#d97706;"></div>
+                      </div>
+                      <ul class="report-stats-list">
+                        <li><span>On-Time</span><strong id="rpt-wake-ontime">—</strong></li>
+                        <li><span>Snoozed</span><strong id="rpt-wake-snoozed">—</strong></li>
+                        <li><span>Consistency</span><strong id="rpt-wake-consistency">—</strong></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <!-- Row 2: Challenge + Productivity side by side -->
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+
+                    <!-- Challenge Report -->
+                    <div class="report-card" id="report-challenge">
+                      <div class="report-card-header">
+                        <div class="report-card-icon" style="background:#ede9fe;color:#7c3aed;">🧩</div>
+                        <div>
+                          <div class="report-card-title">Challenge Performance</div>
+                          <div class="report-card-sub">All time</div>
+                        </div>
+                        <button class="btn-report-dl" onclick="exportReportExcel('challenge', this)" title="Download CSV">⬇</button>
+                      </div>
+                      <div class="report-big-num" id="rpt-ch-acc">—</div>
+                      <div class="report-big-label">Accuracy Rate</div>
+                      <div class="report-bar-wrap">
+                        <div class="report-bar-fill" id="rpt-ch-bar" style="width:0%;background:#7c3aed;"></div>
+                      </div>
+                      <ul class="report-stats-list">
+                        <li><span>Total Attempts</span><strong id="rpt-ch-total">—</strong></li>
+                        <li><span>Total Score</span><strong id="rpt-ch-score">—</strong></li>
+                        <li><span>Avg Solve Time</span><strong id="rpt-ch-time">—</strong></li>
+                        <li><span>Recommended</span><strong id="rpt-ch-level">—</strong></li>
+                      </ul>
+                      <!-- Type breakdown mini bars -->
+                      <div id="rpt-ch-breakdown" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;"></div>
+                    </div>
+
+                    <!-- Productivity Report -->
+                    <div class="report-card" id="report-productivity">
+                      <div class="report-card-header">
+                        <div class="report-card-icon" style="background:#dbeafe;color:#2563eb;">🚀</div>
+                        <div>
+                          <div class="report-card-title">Productivity Score</div>
+                          <div class="report-card-sub">Weighted model</div>
+                        </div>
+                        <button class="btn-report-dl" onclick="exportReportExcel('productivity', this)" title="Download CSV">⬇</button>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:16px;margin:8px 0;">
+                        <div class="report-big-num" id="rpt-prod-score">—</div>
+                        <span class="report-grade-badge" id="rpt-prod-grade">—</span>
+                      </div>
+                      <div class="report-big-label">Overall Score / 100</div>
+                      <div class="report-bar-wrap" style="margin:10px 0;">
+                        <div class="report-bar-fill" id="rpt-prod-bar" style="width:0%;background:#2563eb;"></div>
+                      </div>
+                      <ul class="report-stats-list">
+                        <li><span>Challenge (40%)</span><strong id="rpt-prod-ch">—</strong></li>
+                        <li><span>Habits (35%)</span><strong id="rpt-prod-h">—</strong></li>
+                        <li><span>Sleep (25%)</span><strong id="rpt-prod-sl">—</strong></li>
+                      </ul>
+                      <p id="rpt-prod-insight" style="font-size:0.78rem;color:#475569;margin-top:10px;line-height:1.4;background:#f8fafc;padding:10px;border-radius:10px;"></p>
+                    </div>
+                  </div>
+
+                  <!-- Row 3: Sleep Analytics full width -->
+                  <div class="report-card" id="report-sleep" style="margin-bottom:0;">
+                    <div class="report-card-header">
+                      <div class="report-card-icon" style="background:#e0f2fe;color:#0284c7;">🌙</div>
+                      <div>
+                        <div class="report-card-title">Sleep Analytics</div>
+                        <div class="report-card-sub">7-day trend</div>
+                      </div>
+                      <button class="btn-report-dl" onclick="exportReportExcel('sleep', this)" title="Download CSV">⬇</button>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin:14px 0;">
+                      <div class="report-mini-stat">
+                        <span id="rpt-sleep-score" style="font-size:1.6rem;font-weight:800;color:#0284c7;">—</span>
+                        <span>Sleep Score</span>
+                      </div>
+                      <div class="report-mini-stat">
+                        <span id="rpt-sleep-wake" style="font-size:1.6rem;font-weight:800;color:#0284c7;">—</span>
+                        <span>Avg Wakefulness</span>
+                      </div>
+                      <div class="report-mini-stat">
+                        <span id="rpt-sleep-events" style="font-size:1.6rem;font-weight:800;color:#0284c7;">—</span>
+                        <span>Alarm Events</span>
+                      </div>
+                      <div class="report-mini-stat">
+                        <span id="rpt-sleep-label" style="font-size:0.9rem;font-weight:700;color:#0284c7;text-align:center;">—</span>
+                        <span>Status</span>
+                      </div>
+                    </div>
+                    <!-- 7-day bar chart -->
+                    <div style="display:flex;align-items:flex-end;gap:8px;height:80px;padding:0 4px;margin-bottom:6px;" id="rpt-sleep-bars">
+                      <!-- Rendered by JS -->
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--muted);" id="rpt-sleep-labels">
+                      <!-- Rendered by JS -->
+                    </div>
+                  </div>
+
+                </div><!-- /reports-grid -->
+
+                <!-- Generated at footer -->
+                <div style="display:flex;align-items:center;gap:6px;font-size:0.74rem;color:var(--muted);padding-top:14px;border-top:1px solid var(--border);margin-top:20px;" id="reports-footer" style="display:none;">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <span id="reports-generated-at">—</span>
+                </div>
+
+              </div><!-- /reports-card -->
+
+              <!-- ── MY COACHING SESSIONS CARD ─────────────────── -->
+              <div class="dashboard-card grid-col-span-3 sub-card" data-role="user" data-sub="sessions" style="display:none;flex-direction:column;gap:0;">
+
+                <!-- Header -->
+                <div class="ms-header">
+                  <div>
+                    <h3 style="margin:0;border:none;padding:0;">My Coaching Sessions</h3>
+                    <p class="ms-subtitle">Sessions your wellness coach has scheduled with you.</p>
+                  </div>
+                  <button class="ms-refresh-btn" onclick="loadUserSessions()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                      stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
+                      <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                    Refresh
+                  </button>
+                </div>
+
+                <!-- Summary strip -->
+                <div class="ms-summary-strip">
+                  <div class="ms-sum-pill ms-sum-upcoming">
+                    <span class="ms-sum-num" id="ms-count-upcoming">—</span>
+                    <span class="ms-sum-lbl">Upcoming</span>
+                  </div>
+                  <div class="ms-sum-pill ms-sum-completed">
+                    <span class="ms-sum-num" id="ms-count-completed">—</span>
+                    <span class="ms-sum-lbl">Completed</span>
+                  </div>
+                  <div class="ms-sum-pill ms-sum-total">
+                    <span class="ms-sum-num" id="ms-count-total">—</span>
+                    <span class="ms-sum-lbl">Total Sessions</span>
+                  </div>
+                  <div class="ms-sum-pill ms-sum-coach">
+                    <span class="ms-sum-num" id="ms-coach-name" style="font-size:0.82rem;">—</span>
+                    <span class="ms-sum-lbl">Your Coach</span>
+                  </div>
+                </div>
+
+                <!-- Sessions list -->
+                <div class="ms-list" id="ms-sessions-list">
+                  <div class="ms-loading">Loading your sessions…</div>
+                </div>
+
+                <!-- Empty state (shown by JS when no sessions) -->
+                <div class="ms-empty" id="ms-empty-state" style="display:none;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" width="40" height="40">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                  <p>No coaching sessions yet.</p>
+                  <span>Your wellness coach will schedule sessions to discuss your progress and goals.</span>
+                </div>
+
+              </div>
+              <!-- ── END MY COACHING SESSIONS ───────────────────── -->
+
             </div>
           </section>
 
           <!-- ==================== 2. WELLNESS COACH PANEL ==================== -->
           <section id="coach-panel" class="panel-section">
-            <div class="panel-header-info">
-              <h2>Wellness Coach Dashboard</h2>
-              <p>Monitor patient and client wellness analytics, habit scores, and circadian trends.</p>
+            <div class="panel-header-info" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+              <div>
+                <h2>Wellness Coach Dashboard</h2>
+                <p>Monitor client wellness analytics, habit scores, sleep trends and cognitive progress.</p>
+              </div>
+              <button class="score-refresh-btn" onclick="loadCoachDashboard()" title="Refresh Data">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                  <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+                Refresh
+              </button>
             </div>
 
             <div class="dashboard-grid">
-              <!-- Card: User Behavior Insights -->
-              <div class="dashboard-card">
-                <h3>User Behavior Insights</h3>
+              <!-- ROW 1: Behavior Insights (left half) + Habit Analytics (right half) -->
+
+              <!-- Card: User Behavior Insights (dynamic) -->
+              <div class="dashboard-card sub-card coach-half-card" data-role="coach" data-sub="overview">
+                <h3 style="display:flex;align-items:center;justify-content:space-between;">
+                  User Behavior Insights
+                  <span id="coach-total-users-badge" style="font-size:0.75rem;font-weight:700;background:#eff6ff;color:#1d4ed8;padding:3px 10px;border-radius:999px;">—</span>
+                </h3>
                 <div class="stat-box-grid">
                   <div class="stat-box">
-                    <span class="num">82.4%</span>
+                    <span class="num" id="coach-sleep-quality">—</span>
                     <span class="desc">Avg Sleep Quality</span>
                   </div>
                   <div class="stat-box">
-                    <span class="num">06:48</span>
-                    <span class="desc">Avg Alarm Target</span>
+                    <span class="num" id="coach-avg-wake">—</span>
+                    <span class="desc">Avg Wake Time</span>
                   </div>
                   <div class="stat-box">
-                    <span class="num">91%</span>
-                    <span class="desc">Adherence Rate</span>
+                    <span class="num" id="coach-habit-adh">—</span>
+                    <span class="desc">Habit Adherence</span>
                   </div>
                   <div class="stat-box">
-                    <span class="num">18.6s</span>
-                    <span class="desc">Avg Puzzle Resolve</span>
+                    <span class="num" id="coach-avg-puzzle">—</span>
+                    <span class="desc">Avg Puzzle Time</span>
                   </div>
+                </div>
+                <div style="display:flex;gap:16px;margin-top:8px;font-size:0.82rem;color:var(--muted);">
+                  <span>📊 <strong id="coach-total-challenges">—</strong> challenges</span>
+                  <span>⏰ <strong id="coach-total-alarms">—</strong> alarm events</span>
                 </div>
               </div>
 
-              <!-- Card: Habit Adherence Analytics -->
-              <div class="dashboard-card">
+              <!-- Card: Habit Adherence Analytics (dynamic) — sits RIGHT of Behavior Insights -->
+              <div class="dashboard-card sub-card coach-half-card" data-role="coach" data-sub="habits">
                 <h3>Habit Adherence Analytics</h3>
-                <div class="habit-chart-list">
-                  <div class="habit-progress-row">
-                    <span class="habit-label">Hydration Routine</span>
-                    <div class="progress-bar-small">
-                      <div class="progress-fill" style="width: 94%;"></div>
-                    </div>
-                    <span class="habit-percent">94%</span>
-                  </div>
-                  <div class="habit-progress-row">
-                    <span class="habit-label">Morning Physical Activity</span>
-                    <div class="progress-bar-small">
-                      <div class="progress-fill" style="width: 78%;"></div>
-                    </div>
-                    <span class="habit-percent">78%</span>
-                  </div>
-                  <div class="habit-progress-row">
-                    <span class="habit-label">Digital Screen Fast</span>
-                    <div class="progress-bar-small">
-                      <div class="progress-fill" style="width: 61%;"></div>
-                    </div>
-                    <span class="habit-percent">61%</span>
-                  </div>
-                  <div class="habit-progress-row">
-                    <span class="habit-label">Goal-Setting Review</span>
-                    <div class="progress-bar-small">
-                      <div class="progress-fill" style="width: 83%;"></div>
-                    </div>
-                    <span class="habit-percent">83%</span>
-                  </div>
+                <div class="habit-chart-list" id="coach-habit-list">
+                  <div style="text-align:center;padding:20px;color:var(--muted);">Loading habit data...</div>
                 </div>
               </div>
 
-              <!-- Card: Sleep Trend Reports -->
-              <div class="dashboard-card">
+              <!-- ROW 2: Sleep Reports (left half) + quick stats summary (right half) -->
+
+              <!-- Card: Sleep Trend Reports (dynamic) -->
+              <div class="dashboard-card sub-card coach-half-card" data-role="coach" data-sub="sleep">
                 <h3>Sleep Trend Reports</h3>
                 <div class="chart-mock">
-                  <svg viewBox="0 0 100 50" class="line-chart-svg">
+                  <svg id="coach-sleep-svg" viewBox="0 0 220 80" class="line-chart-svg" style="max-width:100%;height:auto;">
                     <defs>
-                      <linearGradient id="chart-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#1E88E5" stop-opacity="0.3"></stop>
-                        <stop offset="100%" stop-color="#1E88E5" stop-opacity="0"></stop>
+                      <linearGradient id="sleep-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#1E88E5" stop-opacity="0.25"/>
+                        <stop offset="100%" stop-color="#1E88E5" stop-opacity="0"/>
                       </linearGradient>
                     </defs>
-                    <path d="M 0 45 L 20 30 L 40 38 L 60 15 L 80 20 L 100 8" fill="none" stroke="#1E88E5"
-                      stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
-                    <path d="M 0 45 L 20 30 L 40 38 L 60 15 L 80 20 L 100 8 L 100 50 L 0 50 Z" fill="url(#chart-grad)">
-                    </path>
-                    <line x1="0" y1="50" x2="100" y2="50" stroke="#E5E7EB" stroke-width="1"></line>
+                    <path id="coach-sleep-line" d="" fill="none" stroke="#1E88E5" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                    <path id="coach-sleep-area" d="" fill="url(#sleep-grad)"/>
+                    <line x1="0" y1="78" x2="220" y2="78" stroke="#E5E7EB" stroke-width="1"/>
                   </svg>
-                  <div class="chart-labels">
-                    <span>Mon</span>
-                    <span>Tue</span>
-                    <span>Wed</span>
-                    <span>Thu</span>
-                    <span>Fri</span>
-                    <span>Sat</span>
+                  <div class="chart-labels" id="coach-sleep-labels" style="max-width:100%;">
+                    <span>—</span><span>—</span><span>—</span><span>—</span><span>—</span><span>—</span><span>—</span>
                   </div>
                 </div>
-                <p class="chart-footer-text">Cohort sleep debt decreased by <strong>0.8 hrs</strong> on average.</p>
+                <p class="chart-footer-text" id="coach-sleep-summary">Loading sleep trend data...</p>
               </div>
 
-              <!-- Card: Progress Monitoring -->
-              <div class="dashboard-card grid-col-span-2">
-                <h3>Client Progress Monitoring</h3>
+              <!-- Card: Quick Coach Summary (right of Sleep Reports) -->
+              <div class="dashboard-card sub-card coach-half-card" data-role="coach" data-sub="overview" style="background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);">
+                <h3 style="border-bottom-color:#bae6fd;">📌 Coaching Summary</h3>
+                <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 16px;border:1px solid #bae6fd;">
+                    <span style="font-size:0.85rem;font-weight:600;color:#0369a1;">👥 Active Users</span>
+                    <span id="coach-summary-users" style="font-size:1.4rem;font-weight:800;color:#0284c7;">—</span>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 16px;border:1px solid #bae6fd;">
+                    <span style="font-size:0.85rem;font-weight:600;color:#0369a1;">🧠 Total Challenges</span>
+                    <span id="coach-summary-challenges" style="font-size:1.4rem;font-weight:800;color:#0284c7;">—</span>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 16px;border:1px solid #bae6fd;">
+                    <span style="font-size:0.85rem;font-weight:600;color:#0369a1;">⏰ Alarm Events</span>
+                    <span id="coach-summary-alarms" style="font-size:1.4rem;font-weight:800;color:#0284c7;">—</span>
+                  </div>
+                  <div style="text-align:center;padding:8px;background:#eff6ff;border-radius:10px;font-size:0.78rem;color:#1d4ed8;font-weight:600;">
+                    Data refreshes on each panel open
+                  </div>
+                </div>
+              </div>
+
+              <!-- ROW 3: Progress Monitoring — full width -->
+              <!-- Card: Progress Monitoring (dynamic) -->
+              <div class="dashboard-card grid-col-span-3 sub-card" data-role="coach" data-sub="clients">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                  <div>
+                    <h3 style="margin:0;border:none;padding:0;">Client Progress Monitoring</h3>
+                    <p style="font-size:0.82rem;color:var(--muted);margin:4px 0 0;">Real-time data from all registered users</p>
+                  </div>
+                  <span id="coach-client-count" style="font-size:0.82rem;font-weight:700;color:var(--muted);">—</span>
+                </div>
                 <div class="table-responsive">
                   <table class="data-table">
                     <thead>
@@ -1090,184 +1723,511 @@
                         <th>Wakeup Goal</th>
                         <th>Avg Wakeup</th>
                         <th>Habit Adherence</th>
+                        <th>Challenge Acc.</th>
                         <th>Cognitive Status</th>
                         <th>Last Active</th>
-                        <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td>Sarah Jenkins</td>
-                        <td>06:00 AM</td>
-                        <td>06:04 AM</td>
-                        <td class="font-semibold text-success">95%</td>
-                        <td><span class="badge badge-success">Optimal</span></td>
-                        <td>10 mins ago</td>
-                        <td><button class="btn-action">Notify</button></td>
-                      </tr>
-                      <tr>
-                        <td>David Miller</td>
-                        <td>07:00 AM</td>
-                        <td>07:22 AM</td>
-                        <td class="font-semibold text-warning">71%</td>
-                        <td><span class="badge badge-warning">Fatigued</span></td>
-                        <td>1 hour ago</td>
-                        <td><button class="btn-action">Adjust Plan</button></td>
-                      </tr>
-                      <tr>
-                        <td>Emma Rodriguez</td>
-                        <td>06:30 AM</td>
-                        <td>06:33 AM</td>
-                        <td class="font-semibold text-success">88%</td>
-                        <td><span class="badge badge-success">Optimal</span></td>
-                        <td>3 hours ago</td>
-                        <td><button class="btn-action">Notify</button></td>
-                      </tr>
-                      <tr>
-                        <td>James Taylor</td>
-                        <td>05:45 AM</td>
-                        <td>06:02 AM</td>
-                        <td class="font-semibold text-danger">54%</td>
-                        <td><span class="badge badge-danger">High Risk</span></td>
-                        <td>Yesterday</td>
-                        <td><button class="btn-action urgent">Alert</button></td>
-                      </tr>
+                    <tbody id="coach-progress-tbody">
+                      <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px;">Loading client data...</td></tr>
                     </tbody>
                   </table>
                 </div>
               </div>
+            </div>
+
+              <!-- ── CLIENT DIRECTORY + SESSION SCHEDULER ─────────── -->
+              <div class="dashboard-card grid-col-span-3 sub-card" data-role="coach" data-sub="directory" style="display:none;flex-direction:column;gap:0;">
+
+                <!-- Card header -->
+                <div class="cd-header">
+                  <div>
+                    <h3 style="margin:0;border:none;padding:0;">Client Directory</h3>
+                    <p class="cd-subtitle">View each client's cognitive progress and schedule a coaching session.</p>
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <span class="cd-count-badge" id="cd-client-count">— clients</span>
+                    <button class="cd-refresh-btn" onclick="loadCoachDirectory()">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
+                        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                      </svg>
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Search bar -->
+                <div class="cd-search-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" width="16" height="16" class="cd-search-icon">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="text" id="cd-search" class="cd-search-input"
+                    placeholder="Search clients by name or email…"
+                    oninput="cdFilterClients(this.value)">
+                </div>
+
+                <!-- Client list -->
+                <div class="cd-list" id="cd-client-list">
+                  <div class="cd-loading">Loading client directory…</div>
+                </div>
+
+                <!-- ── SESSION SCHEDULER ──────────────────────────── -->
+                <div class="cd-scheduler" id="cd-scheduler">
+                  <div class="cd-scheduler-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" width="17" height="17">
+                      <rect x="3" y="4" width="18" height="18" rx="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    Schedule a Coaching Session
+                  </div>
+
+                  <div class="cd-sched-form">
+                    <!-- Row 1: client + date + time + duration -->
+                    <div class="cd-form-grid">
+                      <div class="cd-form-field">
+                        <label class="cd-form-label">Client</label>
+                        <select id="sched-client-select" class="cd-form-input">
+                          <option value="">— Select client —</option>
+                        </select>
+                      </div>
+                      <div class="cd-form-field">
+                        <label class="cd-form-label">Date</label>
+                        <input type="date" id="sched-date" class="cd-form-input">
+                      </div>
+                      <div class="cd-form-field">
+                        <label class="cd-form-label">Time</label>
+                        <input type="time" id="sched-time" class="cd-form-input">
+                      </div>
+                      <div class="cd-form-field">
+                        <label class="cd-form-label">Duration</label>
+                        <select id="sched-duration" class="cd-form-input">
+                          <option value="15">15 min</option>
+                          <option value="30" selected>30 min</option>
+                          <option value="45">45 min</option>
+                          <option value="60">60 min</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Row 2: topic + notes -->
+                    <div class="cd-form-grid cd-form-grid-2">
+                      <div class="cd-form-field">
+                        <label class="cd-form-label">Session Topic</label>
+                        <select id="sched-topic" class="cd-form-input">
+                          <option value="Cognitive Challenge Review">🧠 Cognitive Challenge Review</option>
+                          <option value="Progress & Goals Check-in">📊 Progress & Goals Check-in</option>
+                          <option value="Habit Building Strategy">📋 Habit Building Strategy</option>
+                          <option value="Sleep Pattern Analysis">🌙 Sleep Pattern Analysis</option>
+                          <option value="Wakefulness & Energy Coaching">⚡ Wakefulness & Energy Coaching</option>
+                          <option value="Difficulty Level Planning">🎯 Difficulty Level Planning</option>
+                          <option value="General Check-in">💬 General Check-in</option>
+                        </select>
+                      </div>
+                      <div class="cd-form-field">
+                        <label class="cd-form-label">Notes <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+                        <input type="text" id="sched-notes" class="cd-form-input"
+                          placeholder="Pre-session notes for context…" maxlength="200">
+                      </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="cd-sched-actions">
+                      <div class="cd-sched-status" id="sched-status"></div>
+                      <button class="cd-btn-schedule" onclick="scheduleSession()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                          <line x1="12" y1="5" x2="12" y2="19"/>
+                          <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Book Session
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Upcoming sessions list -->
+                  <div class="cd-sessions-header">
+                    <span class="cd-sessions-label">Upcoming &amp; Past Sessions</span>
+                    <button class="cd-refresh-btn" onclick="loadSessionHistory()">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round" width="12" height="12">
+                        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                      </svg>
+                      Refresh
+                    </button>
+                  </div>
+                  <div class="cd-sessions-list" id="cd-sessions-list">
+                    <div class="cd-sessions-empty">No sessions scheduled yet.</div>
+                  </div>
+
+                </div>
+                <!-- ── END SESSION SCHEDULER ──────────────────────── -->
+
+              </div>
+              <!-- ── END CLIENT DIRECTORY ──────────────────────────── -->
+
             </div>
           </section>
 
           <!-- ==================== 3. ADMIN PANEL ==================== -->
           <section id="admin-panel" class="panel-section active">
-            <div class="panel-header-info">
-              <h2>Admin Dashboard</h2>
-              <p>Manage system preferences, monitor algorithmic performance, user logs, and security statuses.</p>
+            <div class="panel-header-info" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+              <div>
+                <h2>Admin Dashboard</h2>
+                <p>Manage users, monitor platform analytics, recommendation engine, and system reports.</p>
+              </div>
+              <button class="score-refresh-btn" onclick="loadAdminDashboard()" title="Refresh Data">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                  <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+                Refresh
+              </button>
             </div>
 
-            <div class="dashboard-grid admin-layout">
-              <!-- Card: Platform Analytics -->
-              <div class="dashboard-card platform-analytics">
+            <div class="dashboard-grid">
+
+              <!-- ROW 1: Platform Analytics (left) + System Reports (right) -->
+
+              <!-- Card: Platform Analytics (dynamic) -->
+              <div class="dashboard-card sub-card admin-half-card" data-role="admin" data-sub="analytics">
                 <h3>Platform Analytics</h3>
                 <div class="analytics-grid">
                   <div class="stat-box-blue">
-                    <span class="num">12,492</span>
+                    <span class="num" id="admin-total-users">—</span>
                     <span class="desc">TOTAL USERS</span>
                   </div>
                   <div class="stat-box-blue">
-                    <span class="num">9,820</span>
-                    <span class="desc">ACTIVE DAILY ALARMS</span>
+                    <span class="num" id="admin-active-alarms">—</span>
+                    <span class="desc">ACTIVE ALARMS</span>
                   </div>
                   <div class="stat-box-blue">
-                    <span class="num">78.90%</span>
-                    <span class="desc">API UPTIME</span>
+                    <span class="num" id="admin-new-users">—</span>
+                    <span class="desc">NEW THIS WEEK</span>
                   </div>
                   <div class="stat-box-blue">
-                    <span class="num">0.82s</span>
-                    <span class="desc">AVG API LATENCY</span>
+                    <span class="num" id="admin-success-rate">—</span>
+                    <span class="desc">CHALLENGE SUCCESS</span>
                   </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;">
+                  <span style="width:9px;height:9px;background:#16a34a;border-radius:50%;display:inline-block;box-shadow:0 0 0 3px rgba(22,163,74,0.2);"></span>
+                  <span style="font-size:0.82rem;font-weight:700;color:#15803d;" id="admin-api-status">API Status: Loading...</span>
+                  <span style="margin-left:auto;font-size:0.78rem;color:#64748b;" id="admin-total-challenges">— challenges logged</span>
                 </div>
               </div>
 
-              <!-- Card: System Reports -->
-              <div class="dashboard-card system-reports">
-                <h3>System Reports</h3>
-                <ul class="report-list-modern">
-                  <li>
-                    <div class="report-info">
-                      <span class="report-title">Database Health Audit</span>
-                      <span class="report-meta">Generated July 25, 2026 - 12MB</span>
-                    </div>
-                    <button class="btn-download-white">Download</button>
-                  </li>
-                  <li>
-                    <div class="report-info">
-                      <span class="report-title">Monthly Circadian Accuracy</span>
-                      <span class="report-meta">Generated July 01, 2026 - 4.2MB</span>
-                    </div>
-                    <button class="btn-download-white">Download</button>
-                  </li>
-                  <li>
-                    <div class="report-info">
-                      <span class="report-title">System Error Logs (Weekly)</span>
-                      <span class="report-meta">Generated July 20, 2026 - 850KB</span>
-                    </div>
-                    <button class="btn-download-white">Download</button>
-                  </li>
-                </ul>
+              <!-- Card: System Reports (dynamic) — RIGHT of Platform Analytics -->
+              <div class="dashboard-card sub-card admin-half-card" data-role="admin" data-sub="reports">
+
+                <!-- Header -->
+                <div class="sr-header">
+                  <div>
+                    <h3 style="margin:0;border:none;padding:0;">System Reports</h3>
+                    <p class="sr-subtitle" id="sr-generated-at">Loading...</p>
+                  </div>
+                  <button class="sr-refresh-btn" onclick="loadAdminReports()" title="Refresh">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                      stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                      <polyline points="23 4 23 10 17 10"/>
+                      <polyline points="1 20 1 14 7 14"/>
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                    Refresh
+                  </button>
+                </div>
+
+                <!-- Summary strip -->
+                <div class="sr-summary-strip" id="sr-summary-strip">
+                  <div class="sr-summary-pill">
+                    <span class="sr-sum-num" id="sr-total-records">—</span>
+                    <span class="sr-sum-label">Total Records</span>
+                  </div>
+                  <div class="sr-summary-pill">
+                    <span class="sr-sum-num" id="sr-db-size">—</span>
+                    <span class="sr-sum-label">Est. DB Size</span>
+                  </div>
+                  <div class="sr-summary-pill">
+                    <span class="sr-sum-num" id="sr-active-users">—</span>
+                    <span class="sr-sum-label">Active Users</span>
+                  </div>
+                  <div class="sr-summary-pill">
+                    <span class="sr-sum-num" id="sr-new-week">—</span>
+                    <span class="sr-sum-label">New This Week</span>
+                  </div>
+                </div>
+
+                <!-- Report tiles list -->
+                <div class="sr-list" id="admin-reports-list">
+                  <!-- Loading skeleton -->
+                  <div class="sr-tile sr-skeleton"></div>
+                  <div class="sr-tile sr-skeleton"></div>
+                  <div class="sr-tile sr-skeleton"></div>
+                  <div class="sr-tile sr-skeleton"></div>
+                </div>
+
               </div>
 
-              <!-- Card: Recommendation Monitoring -->
-              <div class="dashboard-card recommendation-monitoring">
+              <!-- ROW 2: Recommendation Monitoring (left) + Quick Stats (right) -->
+
+              <!-- Card: Recommendation Monitoring (dynamic) -->
+              <div class="dashboard-card sub-card admin-half-card" data-role="admin" data-sub="recommendations">
                 <h3>Recommendation Monitoring</h3>
-                <div class="recommendations-container-modern">
-                  <div class="rec-log-item">
-                    <span class="timestamp">12:34:55</span>
-                    <span class="log-text">Algorithmic recommendation rule applied:<br><strong>Increase puzzle
-                        difficulty</strong> for User #9834<br>(Wakeup snooze trend detected).</span>
-                  </div>
-                  <div class="rec-log-item">
-                    <span class="timestamp">11:15:02</span>
-                    <span class="log-text">Algorithmic recommendation rule applied:<br><strong>Suggest 10m exercise
-                        habit</strong> for User #1204<br>(Consistent early wakeup success).</span>
-                  </div>
-                  <div class="rec-log-item">
-                    <span class="timestamp">09:02:18</span>
-                    <span class="log-text">System alert: Circadian drift detected in 12% of<br>Cohort B users.
-                      Recommendation pipeline<br>updated.</span>
+                <div class="recommendations-container-modern" id="admin-rec-log">
+                  <div style="text-align:center;padding:20px;color:var(--muted);font-size:0.85rem;">Loading events...</div>
+                </div>
+
+                <!-- Admin Broadcast Announcement Form -->
+                <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border);">
+                  <p style="font-size:0.82rem;font-weight:700;color:var(--ink);margin-bottom:10px;">
+                    📢 Send Platform Announcement
+                  </p>
+                  <div style="display:flex;flex-direction:column;gap:8px;">
+                    <input type="text" id="admin-announce-title" class="ac-input"
+                      placeholder="Announcement title..." style="font-size:0.85rem;padding:8px 12px;">
+                    <textarea id="admin-announce-body" class="ac-input"
+                      placeholder="Announcement message for all users..."
+                      style="font-size:0.82rem;padding:8px 12px;resize:vertical;min-height:72px;"></textarea>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                      <select id="admin-announce-priority" class="ac-input" style="width:auto;padding:7px 10px;font-size:0.82rem;flex:1;">
+                        <option value="normal">🟡 Normal</option>
+                        <option value="high">🔴 High Priority</option>
+                        <option value="low">🟢 Low</option>
+                      </select>
+                      <select id="admin-announce-icon" class="ac-input" style="width:auto;padding:7px 10px;font-size:0.82rem;flex:1;">
+                        <option value="📢">📢 Announcement</option>
+                        <option value="🎓">🎓 Tip</option>
+                        <option value="🚀">🚀 Feature</option>
+                        <option value="⚠️">⚠️ Warning</option>
+                        <option value="🌟">🌟 Update</option>
+                      </select>
+                      <button type="button" class="btn-action" style="padding:8px 18px;font-size:0.82rem;white-space:nowrap;"
+                        onclick="sendAdminAnnouncement()">
+                        Send
+                      </button>
+                    </div>
+                    <div id="admin-announce-status" style="font-size:0.75rem;color:var(--muted);min-height:16px;"></div>
                   </div>
                 </div>
               </div>
 
-              <!-- Card: User Management -->
-              <div class="dashboard-card user-management full-width">
-                <h3>User Management</h3>
+              <!-- Card: Admin Quick Stats (right of Rec Monitoring) -->
+              <div class="dashboard-card sub-card admin-half-card" data-role="admin" data-sub="analytics" style="background:linear-gradient(135deg,#fafafa 0%,#f0f9ff 100%);">
+                <h3 style="border-bottom-color:#bae6fd;">⚡ Quick Overview</h3>
+                <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 16px;border:1px solid #e2e8f0;">
+                    <span style="font-size:0.85rem;font-weight:600;color:#475569;">👤 Total Registered</span>
+                    <span id="admin-qs-users" style="font-size:1.3rem;font-weight:800;color:#2563eb;">—</span>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 16px;border:1px solid #e2e8f0;">
+                    <span style="font-size:0.85rem;font-weight:600;color:#475569;">⏰ Active Alarms</span>
+                    <span id="admin-qs-alarms" style="font-size:1.3rem;font-weight:800;color:#16a34a;">—</span>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 16px;border:1px solid #e2e8f0;">
+                    <span style="font-size:0.85rem;font-weight:600;color:#475569;">✅ Challenge Success</span>
+                    <span id="admin-qs-success" style="font-size:1.3rem;font-weight:800;color:#d97706;">—</span>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 16px;border:1px solid #e2e8f0;">
+                    <span style="font-size:0.85rem;font-weight:600;color:#475569;">🆕 New This Week</span>
+                    <span id="admin-qs-new" style="font-size:1.3rem;font-weight:800;color:#9333ea;">—</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ROW 3: User Management — full width -->
+              <!-- Card: User Management (dynamic) -->
+              <div class="dashboard-card grid-col-span-3 sub-card" data-role="admin" data-sub="users">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+                  <div>
+                    <h3 style="margin:0;border:none;padding:0;">User Management</h3>
+                    <p style="font-size:0.82rem;color:var(--muted);margin:4px 0 0;">All registered accounts — enable or disable in one click</p>
+                  </div>
+                  <span id="admin-user-count-tag" style="font-size:0.82rem;font-weight:700;background:#f1f5f9;padding:4px 12px;border-radius:999px;color:var(--muted);">— users</span>
+                </div>
                 <div class="table-responsive">
                   <table class="data-table clean-table">
                     <thead>
                       <tr>
-                        <th>User ID</th>
-                        <th>User Name</th>
+                        <th>ID</th>
+                        <th>Full Name</th>
                         <th>Email</th>
-                        <th>Assigned Role</th>
-                        <th>Account Status</th>
-                        <th>Registration Date</th>
+                        <th>Role</th>
+                        <th>Provider</th>
+                        <th>Status</th>
+                        <th>Registered</th>
                         <th>Actions</th>
+                        <th>Notify</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td>#USR-8932</td>
-                        <td>Sarah Jenkins</td>
-                        <td>sarah.j@example.com</td>
-                        <td><span class="badge-role role-user">User</span></td>
-                        <td><span class="badge badge-success">Active</span></td>
-                        <td>March 12, 2025</td>
-                        <td><button class="btn-table-edit">Edit</button></td>
-                      </tr>
-                      <tr>
-                        <td>#USR-4521</td>
-                        <td>Dr. Richard Foster</td>
-                        <td>r.foster@example.com</td>
-                        <td><span class="badge-role role-coach">Wellness Coach</span></td>
-                        <td><span class="badge badge-success">Active</span></td>
-                        <td>Jan 05, 2025</td>
-                        <td><button class="btn-table-edit">Edit</button></td>
-                      </tr>
-                      <tr>
-                        <td>#USR-2309</td>
-                        <td>Admin Chief</td>
-                        <td>admin.chief@example.com</td>
-                        <td><span class="badge-role role-admin">Admin</span></td>
-                        <td><span class="badge badge-success">Active</span></td>
-                        <td>Nov 20, 2024</td>
-                        <td><button class="btn-table-edit">Edit</button></td>
-                      </tr>
+                    <tbody id="admin-users-tbody">
+                      <tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px;">Loading users...</td></tr>
                     </tbody>
                   </table>
                 </div>
+
+                <!-- ── PERSONAL NOTIFICATION COMPOSER ───────────── -->
+                <div class="pn-section">
+
+                  <!-- Section title -->
+                  <div class="pn-section-header">
+                    <div class="pn-section-title-row">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                        <path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3z"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        <line x1="12" y1="3" x2="12" y2="1"/>
+                      </svg>
+                      <span>Send Personal Notification</span>
+                    </div>
+                    <p class="pn-section-sub">Send a private, targeted notification directly to one user's notification bell.</p>
+                  </div>
+
+                  <!-- Composer card -->
+                  <div class="pn-composer">
+
+                    <!-- Row 1: recipient + type + priority -->
+                    <div class="pn-row pn-row-3">
+                      <div class="pn-field">
+                        <label class="pn-label" for="pn-user-select">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                          </svg>
+                          Recipient
+                        </label>
+                        <select id="pn-user-select" class="pn-input">
+                          <option value="">— Select user —</option>
+                        </select>
+                      </div>
+                      <div class="pn-field">
+                        <label class="pn-label" for="pn-type-select">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                          </svg>
+                          Type
+                        </label>
+                        <select id="pn-type-select" class="pn-input">
+                          <option value="announcement">📢 Announcement</option>
+                          <option value="challenge">🧩 Challenge Tip</option>
+                          <option value="habit">📋 Habit Reminder</option>
+                          <option value="progress">📊 Progress Update</option>
+                          <option value="wakeup">⏰ Wake-up Nudge</option>
+                          <option value="bedtime">🌙 Bedtime Reminder</option>
+                        </select>
+                      </div>
+                      <div class="pn-field">
+                        <label class="pn-label" for="pn-priority-select">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                          </svg>
+                          Priority
+                        </label>
+                        <select id="pn-priority-select" class="pn-input">
+                          <option value="normal">🟡 Normal</option>
+                          <option value="high">🔴 High</option>
+                          <option value="low">🟢 Low</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Row 2: icon + title -->
+                    <div class="pn-row pn-row-2">
+                      <div class="pn-field pn-field-icon">
+                        <label class="pn-label" for="pn-icon-select">Icon</label>
+                        <select id="pn-icon-select" class="pn-input">
+                          <option value="📬">📬 Direct Message</option>
+                          <option value="📢">📢 Announcement</option>
+                          <option value="🎯">🎯 Goal</option>
+                          <option value="⚡">⚡ Urgent</option>
+                          <option value="💡">💡 Tip</option>
+                          <option value="🏆">🏆 Achievement</option>
+                          <option value="⚠️">⚠️ Warning</option>
+                          <option value="🎓">🎓 Advice</option>
+                          <option value="🌟">🌟 Update</option>
+                          <option value="❤️">❤️ Encouragement</option>
+                        </select>
+                      </div>
+                      <div class="pn-field" style="flex:1;">
+                        <label class="pn-label" for="pn-title-input">Title</label>
+                        <input type="text" id="pn-title-input" class="pn-input"
+                          placeholder="e.g. Great progress this week!" maxlength="80">
+                      </div>
+                    </div>
+
+                    <!-- Row 3: message body -->
+                    <div class="pn-field">
+                      <label class="pn-label" for="pn-body-input">Message</label>
+                      <textarea id="pn-body-input" class="pn-input pn-textarea"
+                        placeholder="Write your personal message to this user..." maxlength="300"></textarea>
+                      <span class="pn-char-count" id="pn-char-count">0 / 300</span>
+                    </div>
+
+                    <!-- Row 4: preview + send -->
+                    <div class="pn-actions-row">
+                      <div class="pn-preview" id="pn-preview" style="display:none;">
+                        <span class="pn-preview-icon" id="pn-preview-icon">📬</span>
+                        <div class="pn-preview-text">
+                          <strong id="pn-preview-title">—</strong>
+                          <span id="pn-preview-body">—</span>
+                        </div>
+                      </div>
+                      <div class="pn-btn-group">
+                        <button type="button" class="pn-btn-preview" onclick="pnTogglePreview()">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                          </svg>
+                          Preview
+                        </button>
+                        <button type="button" class="pn-btn-send" id="pn-send-btn" onclick="sendPersonalNotification()">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                          </svg>
+                          Send Notification
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Status feedback -->
+                    <div class="pn-status" id="pn-send-status"></div>
+                  </div>
+
+                  <!-- Sent history log -->
+                  <div class="pn-history-header">
+                    <span class="pn-history-title">Sent History</span>
+                    <button class="pn-btn-refresh" onclick="loadPersonalNotifHistory()">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round" width="12" height="12">
+                        <polyline points="23 4 23 10 17 10"/>
+                        <polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                      </svg>
+                      Refresh
+                    </button>
+                  </div>
+                  <div class="pn-history-list" id="pn-history-list">
+                    <div class="pn-history-empty">No notifications sent yet.</div>
+                  </div>
+
+                </div>
+                <!-- ── END PERSONAL NOTIFICATION COMPOSER ──────── -->
+
               </div>
+
             </div>
           </section>
 
@@ -1700,6 +2660,9 @@
 
     </div>
   </div>
+
+  <!-- ── TOAST NOTIFICATION CONTAINER ─────────────────────── -->
+  <div class="toast-container" id="toastContainer"></div>
 
   <script src="dashboard.js"></script>
 </body>

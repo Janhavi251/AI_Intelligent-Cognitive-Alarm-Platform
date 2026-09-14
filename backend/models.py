@@ -26,6 +26,7 @@ class User(Base):
     challenge_logs = relationship("ChallengeLog", back_populates="user", cascade="all, delete-orphan")
     achievements   = relationship("Achievement", back_populates="user", cascade="all, delete-orphan")
     habit_logs     = relationship("HabitLog", back_populates="user", cascade="all, delete-orphan")
+    alarm_logs     = relationship("AlarmLog", back_populates="user", cascade="all, delete-orphan")
 
 
 class Alarm(Base):
@@ -70,6 +71,21 @@ class ChallengeLog(Base):
     user = relationship("User", back_populates="challenge_logs")
 
 
+class AlarmLog(Base):
+    __tablename__ = "alarm_logs"
+
+    id            = Column(Integer, primary_key=True, index=True)
+    alarm_id      = Column(Integer, ForeignKey("alarms.id", ondelete="CASCADE"), nullable=True)
+    user_id       = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
+    triggered_at  = Column(DateTime(timezone=True), server_default=func.now())
+    dismissed_at  = Column(DateTime(timezone=True), nullable=True)
+    status        = Column(String(20), nullable=False, default="on_time")
+    delay_seconds = Column(Integer, default=0)
+    puzzle_solved = Column(Boolean, nullable=False, default=False)
+
+    user  = relationship("User", back_populates="alarm_logs")
+
+
 class HabitLog(Base):
     __tablename__ = "habit_logs"
 
@@ -80,6 +96,9 @@ class HabitLog(Base):
     log_date   = Column(DateTime(timezone=True), server_default=func.current_date())
 
     user = relationship("User", back_populates="habit_logs")
+
+
+class Achievement(Base):
     __tablename__ = "achievements"
 
     id          = Column(Integer, primary_key=True, index=True)
@@ -92,4 +111,38 @@ class HabitLog(Base):
     unlocked_at = Column(DateTime(timezone=True), nullable=True)
 
     user = relationship("User", back_populates="achievements")
+
+
+class CoachSession(Base):
+    __tablename__ = "coach_sessions"
+
+    id           = Column(Integer, primary_key=True, index=True)
+    client_id    = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    coach_id     = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    coach_name   = Column(String(100), nullable=False)
+    client_name  = Column(String(100), nullable=False)
+    date         = Column(String(10),  nullable=False)   # "2026-09-20"
+    time         = Column(String(5),   nullable=False)   # "14:30"
+    duration_min = Column(Integer,     nullable=False, default=30)
+    topic        = Column(String(150), nullable=False, default="General Check-in")
+    notes        = Column(String(300), nullable=True,  default="")
+    status       = Column(String(20),  nullable=False, default="scheduled")
+    created_at   = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class PersonalNotification(Base):
+    __tablename__ = "personal_notifications"
+
+    id           = Column(Integer, primary_key=True, index=True)
+    user_id      = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    sent_by_id   = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"),  nullable=True)
+    sent_by_name = Column(String(100), nullable=False, default="System")
+    notif_type   = Column(String(30),  nullable=False, default="announcement")
+    icon         = Column(String(10),  nullable=False, default="📬")
+    title        = Column(String(150), nullable=False)
+    body         = Column(String(500), nullable=False)
+    priority     = Column(String(10),  nullable=False, default="normal")
+    is_read      = Column(Boolean,     nullable=False, default=False)
+    session_id   = Column(Integer,     nullable=True)   # optional FK to coach_sessions
+    created_at   = Column(DateTime(timezone=True), server_default=func.now())
 
