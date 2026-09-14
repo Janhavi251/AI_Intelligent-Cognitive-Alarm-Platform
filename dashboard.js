@@ -1,4 +1,10 @@
-﻿// ── Read token from URL if coming from Google OAuth ──────────
+﻿// ── API base URL — change this once for all endpoints ────────
+// Set to your Render backend URL for production
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? '${API_BASE}'
+  : 'https://cognitive-alarm-api.onrender.com';  // ← replace with your actual Render URL
+
+// ── Read token from URL if coming from Google OAuth ──────────
 const urlParams = new URLSearchParams(window.location.search);
 const urlToken  = urlParams.get('token');
 const urlName   = urlParams.get('name');
@@ -147,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Load alarms from database on page load ───────────────────
   if (user && user.id && user.id > 0) {
-    apiFetch(`http://localhost:8000/alarms/${user.id}`, { headers: authHeaders({}) })
+    apiFetch(`${API_BASE}/alarms/${user.id}`, { headers: authHeaders({}) })
       .then(res => res.json())
       .then(alarms => {
         const historyTable = document.querySelector('.data-table tbody');
@@ -296,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const userId = (user && user.id) ? parseInt(user.id) : 1;
-        const res = await fetch('http://localhost:8000/alarms', {
+        const res = await fetch('${API_BASE}/alarms', {
           method: 'POST',
           headers: authHeaders(),
           body: JSON.stringify({
@@ -455,7 +461,7 @@ async function editAlarm(alarmId, currentTime, currentLabel, currentRepeat) {
   if (newLabel === null) return;
 
   try {
-    const res = await fetch(`http://localhost:8000/alarms/${alarmId}`, {
+    const res = await fetch(`${API_BASE}/alarms/${alarmId}`, {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify({
@@ -489,7 +495,7 @@ async function editAlarm(alarmId, currentTime, currentLabel, currentRepeat) {
 
 async function toggleAlarm(alarmId, btn) {
   try {
-    const res  = await fetch(`http://localhost:8000/alarms/${alarmId}/toggle`, { method: 'PATCH', headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/alarms/${alarmId}/toggle`, { method: 'PATCH', headers: authHeaders({}) });
     const data = await res.json();
     if (res.ok) {
       btn.textContent = data.is_active ? 'Disable' : 'Enable';
@@ -503,7 +509,7 @@ async function toggleAlarm(alarmId, btn) {
 async function deleteAlarm(alarmId, btn) {
   if (!confirm('Delete this alarm?')) return;
   try {
-    const res = await fetch(`http://localhost:8000/alarms/${alarmId}`, { method: 'DELETE', headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/alarms/${alarmId}`, { method: 'DELETE', headers: authHeaders({}) });
     if (res.ok) {
       // Remove the row from the table
       btn.closest('tr').remove();
@@ -930,7 +936,7 @@ async function renderAlarmHistoryTable() {
 
   try {
     const userId = (user && user.id) ? user.id : 1;
-    const res = await fetch(`http://localhost:8000/challenges/history?user_id=${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/challenges/history?user_id=${userId}`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error('Failed to fetch history');
     const logs = await res.json();
 
@@ -1095,7 +1101,7 @@ function toggleMyAlarmCard(id, checkbox) {
   const item = myAlarmsList.find(a => a.id === id);
   if (item) {
     item.is_active = checkbox.checked;
-    fetch(`http://localhost:8000/alarms/${id}/toggle`, { method: 'PATCH', headers: authHeaders({}) }).catch(() => {});
+    fetch(`${API_BASE}/alarms/${id}/toggle`, { method: 'PATCH', headers: authHeaders({}) }).catch(() => {});
     renderMyAlarms();
   }
 }
@@ -1162,12 +1168,12 @@ async function openChallengeModal(type = 'math', diff = 'medium', title = 'Cogni
   const userId = (user && user.id) ? parseInt(user.id) : 1;
   
   try {
-    const res = await fetch(`http://localhost:8000/challenges/personalized/${userId}?type=${type}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/challenges/personalized/${userId}?type=${type}`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error('API Error');
     cmCurrentChallenge = await res.json();
   } catch (e) {
     try {
-      const res = await fetch(`http://localhost:8000/challenges/generate?type=${type}&difficulty=${diff}`, { headers: authHeaders({}) });
+      const res = await fetch(`${API_BASE}/challenges/generate?type=${type}&difficulty=${diff}`, { headers: authHeaders({}) });
       cmCurrentChallenge = await res.json();
     } catch (err) {
       cmCurrentChallenge = {
@@ -1293,7 +1299,7 @@ async function submitChallengeModalAnswer() {
   const userId = (user && user.id) ? parseInt(user.id) : 1;
 
   try {
-    const res = await fetch(`http://localhost:8000/challenges/verify`, {
+    const res = await fetch(`${API_BASE}/challenges/verify`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({
@@ -1376,7 +1382,7 @@ function closeChallengeModal() {
 function deleteMyAlarmCard(id) {
   if (!confirm('Are you sure you want to delete this alarm?')) return;
   myAlarmsList = myAlarmsList.filter(a => a.id !== id);
-  fetch(`http://localhost:8000/alarms/${id}`, { method: 'DELETE', headers: authHeaders({}) }).catch(() => {});
+  fetch(`${API_BASE}/alarms/${id}`, { method: 'DELETE', headers: authHeaders({}) }).catch(() => {});
   renderMyAlarms();
 }
 
@@ -1391,7 +1397,7 @@ function editMyAlarmCard(id) {
   item.title = newTitle || item.title;
   item.alarm_time = newTime || item.alarm_time;
 
-  fetch(`http://localhost:8000/alarms/${id}`, {
+  fetch(`${API_BASE}/alarms/${id}`, {
     method: 'PUT',
     headers: authHeaders(),
     body: JSON.stringify({
@@ -1412,7 +1418,7 @@ function editMyAlarmCard(id) {
 async function loadCognitivePerformance() {
   const userId = (user && user.id) ? parseInt(user.id) : 1;
   try {
-    const res = await apiFetch(`http://localhost:8000/challenges/performance/${userId}`, { headers: authHeaders({}) });
+    const res = await apiFetch(`${API_BASE}/challenges/performance/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) return;
     const data = await res.json();
     
@@ -1573,7 +1579,7 @@ async function loadCognitivePerformance() {
 async function loadBehavioralAnalytics() {
   const userId = (user && user.id) ? parseInt(user.id) : 1;
   try {
-    const res = await fetch(`http://localhost:8000/analytics/behavioral/${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/analytics/behavioral/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) return;
     const data = await res.json();
 
@@ -1747,7 +1753,7 @@ async function loadAchievements() {
   if (!grid) return;
 
   try {
-    const res = await fetch(`http://localhost:8000/achievements/${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/achievements/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) return;
     const items = await res.json();
 
@@ -1777,7 +1783,7 @@ async function loadAchievements() {
 async function loadCognitiveTrends() {
   const userId = (user && user.id) ? parseInt(user.id) : 1;
   try {
-    const res = await fetch(`http://localhost:8000/challenges/trends/${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/challenges/trends/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) return;
     const data = await res.json();
 
@@ -2041,7 +2047,7 @@ async function loadActiveAlarmChallenge(type, diff) {
   if (optBox) optBox.innerHTML = "";
 
   try {
-    const res = await fetch(`http://localhost:8000/challenges/generate?type=${type}&difficulty=${diff}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/challenges/generate?type=${type}&difficulty=${diff}`, { headers: authHeaders({}) });
     if (res.ok) {
       activeAlarmChallengeData = await res.json();
     } else {
@@ -2142,7 +2148,7 @@ async function submitActiveAlarmAnswer() {
   let verifyRes = null;
   try {
     const userId = (user && user.id) ? parseInt(user.id) : 1;
-    const res = await fetch('http://localhost:8000/challenges/verify', {
+    const res = await fetch('${API_BASE}/challenges/verify', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({
@@ -2204,7 +2210,7 @@ async function submitActiveAlarmAnswer() {
       if (verifyRes.log_id) modalLastLogId = verifyRes.log_id;
 
       if (currentActiveAlarm && currentActiveAlarm.id) {
-        fetch(`http://localhost:8000/alarms/${currentActiveAlarm.id}/snooze`, {
+        fetch(`${API_BASE}/alarms/${currentActiveAlarm.id}/snooze`, {
           method: 'PATCH',
           headers: authHeaders(),
           body: JSON.stringify({ reset: true })
@@ -2270,7 +2276,7 @@ async function submitModalWakefulness(score, btnElement, statusId = 'cm-wake-sta
   const userId = (user && user.id) ? parseInt(user.id) : 1;
 
   try {
-    const res = await fetch('http://localhost:8000/challenges/wakefulness', {
+    const res = await fetch('${API_BASE}/challenges/wakefulness', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({
@@ -2301,7 +2307,7 @@ async function submitModalWakefulness(score, btnElement, statusId = 'cm-wake-sta
 function handleActiveAlarmFailure(msg) {
   alarmAudioEngine.stop();
   if (currentActiveAlarm && currentActiveAlarm.id) {
-    fetch(`http://localhost:8000/alarms/${currentActiveAlarm.id}/snooze`, {
+    fetch(`${API_BASE}/alarms/${currentActiveAlarm.id}/snooze`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify({ increment: true })
@@ -2371,7 +2377,7 @@ function closeActiveAlarmModal() {
     ? Math.round((Date.now() - (activeAlarmStartTime || Date.now())) / 1000)
     : 0;
 
-  fetch('http://localhost:8000/alarm-logs/dismiss', {
+  fetch('${API_BASE}/alarm-logs/dismiss', {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify({
@@ -2395,7 +2401,7 @@ function startAlarmPolling() {
   const userId = (user && user.id) ? parseInt(user.id) : 1;
 
   const fetchLatestAlarms = () => {
-    fetch(`http://localhost:8000/alarms/${userId}`, { headers: authHeaders({}) })
+    fetch(`${API_BASE}/alarms/${userId}`, { headers: authHeaders({}) })
       .then(r => r.json())
       .then(alarms => { cachedAlarms = alarms; })
       .catch(() => {});
@@ -2447,7 +2453,7 @@ function toggleHabitItem(itemEl) {
   const nowCompleted = itemEl.classList.contains('completed');
   const userId = (user && user.id) ? parseInt(user.id) : 1;
 
-  fetch('http://localhost:8000/habits/log', {
+  fetch('${API_BASE}/habits/log', {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify({ user_id: userId, habit_name: habitName, completed: nowCompleted })
@@ -2518,7 +2524,7 @@ function loadHabitState() {
 async function loadHabitAdherence() {
   const userId = (user && user.id) ? parseInt(user.id) : 1;
   try {
-    const res = await apiFetch(`http://localhost:8000/habits/${userId}`, { headers: authHeaders({}) });
+    const res = await apiFetch(`${API_BASE}/habits/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) return;
     const data = await res.json();
 
@@ -2594,7 +2600,7 @@ function setScoreGradeBadge(badgeId, grade) {
 
 async function loadChallengeScore(userId) {
   try {
-    const res = await fetch(`http://localhost:8000/scoring/challenge/${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/scoring/challenge/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) return;
     const data = await res.json();
 
@@ -2618,7 +2624,7 @@ async function loadChallengeScore(userId) {
 
 async function loadProductivityScore(userId) {
   try {
-    const res = await fetch(`http://localhost:8000/scoring/productivity/${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/scoring/productivity/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) return;
     const data = await res.json();
 
@@ -2652,7 +2658,7 @@ async function loadProductivityScore(userId) {
 // ── Habit Score (Weighted Scoring Model) ─────────────────────
 async function loadHabitScore(userId) {
   try {
-    const res = await fetch(`http://localhost:8000/scoring/habit/${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/scoring/habit/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) return;
     const data = await res.json();
 
@@ -2682,7 +2688,7 @@ async function loadHabitScore(userId) {
 
 async function loadSleepScore(userId) {
   try {
-    const res = await fetch(`http://localhost:8000/scoring/sleep/${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/scoring/sleep/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) return;
     const data = await res.json();
 
@@ -2759,7 +2765,7 @@ async function loadRecommendations() {
   let data = null;
 
   try {
-    const res = await fetch(`http://localhost:8000/recommendations/${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/recommendations/${userId}`, { headers: authHeaders({}) });
     if (res.ok) data = await res.json();
   } catch (e) {
     console.warn('Recommendations endpoint unreachable:', e);
@@ -2987,7 +2993,7 @@ async function loadCoachDashboard() {
 
 async function loadCoachBehaviorInsights() {
   try {
-    const res  = await fetch('http://localhost:8000/coach/behavior-insights', { headers: authHeaders({}) });
+    const res  = await fetch('${API_BASE}/coach/behavior-insights', { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
 
@@ -3012,7 +3018,7 @@ async function loadCoachHabits() {
   const listEl = document.getElementById('coach-habit-list');
   if (!listEl) return;
   try {
-    const res  = await fetch('http://localhost:8000/coach/habit-analytics', { headers: authHeaders({}) });
+    const res  = await fetch('${API_BASE}/coach/habit-analytics', { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
     const habits = data.habits || [];
@@ -3040,7 +3046,7 @@ async function loadCoachHabits() {
 
 async function loadCoachSleep() {
   try {
-    const res  = await fetch('http://localhost:8000/coach/sleep-trends', { headers: authHeaders({}) });
+    const res  = await fetch('${API_BASE}/coach/sleep-trends', { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
 
@@ -3090,7 +3096,7 @@ async function loadCoachProgress() {
   if (!tbody) return;
 
   try {
-    const res  = await fetch('http://localhost:8000/coach/progress-monitoring', { headers: authHeaders({}) });
+    const res  = await fetch('${API_BASE}/coach/progress-monitoring', { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
     const users = data.users || [];
@@ -3146,7 +3152,7 @@ async function loadAdminDashboard() {
 
 async function loadAdminAnalytics() {
   try {
-    const res  = await fetch('http://localhost:8000/admin/platform-analytics', { headers: authHeaders({}) });
+    const res  = await fetch('${API_BASE}/admin/platform-analytics', { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
 
@@ -3174,7 +3180,7 @@ async function loadAdminUsers() {
   if (!tbody) return;
 
   try {
-    const res  = await fetch('http://localhost:8000/admin/users', { headers: authHeaders({}) });
+    const res  = await fetch('${API_BASE}/admin/users', { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const users = await res.json();
 
@@ -3255,7 +3261,7 @@ async function adminToggleUser(userId, btn) {
   }
 
   try {
-    const res  = await fetch(`http://localhost:8000/admin/users/${userId}/toggle`, { method: 'PATCH', headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/admin/users/${userId}/toggle`, { method: 'PATCH', headers: authHeaders({}) });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
 
@@ -3349,7 +3355,7 @@ async function loadAdminReports() {
   };
 
   try {
-    const res  = await fetch('http://localhost:8000/admin/system-reports', { headers: authHeaders({}) });
+    const res  = await fetch('${API_BASE}/admin/system-reports', { headers: authHeaders({}) });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
 
@@ -3432,7 +3438,7 @@ async function loadAdminRecLog() {
   if (!logEl) return;
 
   try {
-    const res  = await fetch('http://localhost:8000/admin/recommendation-log', { headers: authHeaders({}) });
+    const res  = await fetch('${API_BASE}/admin/recommendation-log', { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
     const events = data.events || [];
@@ -3475,8 +3481,8 @@ async function loadNotifications() {
   try {
     // Fetch user-specific notifications + global admin announcements in parallel
     const [userRes, adminRes] = await Promise.allSettled([
-      fetch(`http://localhost:8000/notifications/${userId}`, { headers: authHeaders({}) }),
-      fetch('http://localhost:8000/admin/announcements', { headers: authHeaders({}) })
+      fetch(`${API_BASE}/notifications/${userId}`, { headers: authHeaders({}) }),
+      fetch('${API_BASE}/admin/announcements', { headers: authHeaders({}) })
     ]);
 
     let data = { notifications: [], unread: 0, high_priority: 0, generated_at: new Date().toISOString() };
@@ -3737,7 +3743,7 @@ async function sendAdminAnnouncement() {
   if (statusEl) { statusEl.textContent = 'Sending...'; statusEl.style.color = '#64748b'; }
 
   try {
-    const res = await fetch('http://localhost:8000/admin/announcements', {
+    const res = await fetch('${API_BASE}/admin/announcements', {
       method:  'POST',
       headers: authHeaders(),
       body:    JSON.stringify({ title, body, priority, icon })
@@ -3780,7 +3786,7 @@ async function loadReports() {
   if (footerEl) footerEl.style.removeProperty('display');
 
   try {
-    const res = await fetch(`http://localhost:8000/reports/summary/${userId}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/reports/summary/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error('Backend error ' + res.status);
     const d = await res.json();
 
@@ -3895,7 +3901,7 @@ async function exportReportExcel(reportType, btnEl) {
   }
 
   try {
-    const res = await fetch(`http://localhost:8000/reports/export/${userId}?report_type=${reportType}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/reports/export/${userId}?report_type=${reportType}`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
     const disposition = res.headers.get('Content-Disposition') || '';
@@ -3944,7 +3950,7 @@ async function exportReportPDF() {
   }
 
   try {
-    const res  = await fetch(`http://localhost:8000/reports/export-text/${userId}`, { headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/reports/export-text/${userId}`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
 
@@ -4010,7 +4016,7 @@ async function downloadAdminReport(reportType, btnEl) {
   }
 
   try {
-    const res = await fetch(`http://localhost:8000/admin/reports/download/${reportType}`, { headers: authHeaders({}) });
+    const res = await fetch(`${API_BASE}/admin/reports/download/${reportType}`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
     // Get filename from Content-Disposition header
@@ -4155,7 +4161,7 @@ async function sendPersonalNotification() {
   pnSetStatus('', '');
 
   try {
-    const res = await fetch('http://localhost:8000/admin/notifications/personal', {
+    const res = await fetch('${API_BASE}/admin/notifications/personal', {
       method:  'POST',
       headers: authHeaders(),
       body:    JSON.stringify({
@@ -4221,7 +4227,7 @@ async function loadPersonalNotifHistory() {
   listEl.innerHTML = '<div class="pn-history-loading">Loading…</div>';
 
   try {
-    const res = await fetch('http://localhost:8000/admin/notifications/personal', {
+    const res = await fetch('${API_BASE}/admin/notifications/personal', {
       headers: authHeaders({})
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -4295,7 +4301,7 @@ async function loadCoachDirectory() {
   listEl.innerHTML = '<div class="cd-loading">Loading client directory…</div>';
 
   try {
-    const res = await fetch('http://localhost:8000/coach/client-directory', {
+    const res = await fetch('${API_BASE}/coach/client-directory', {
       headers: authHeaders({})
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -4487,7 +4493,7 @@ async function scheduleSession() {
   cdSetSchedStatus('', '');
 
   try {
-    const res = await fetch('http://localhost:8000/coach/sessions', {
+    const res = await fetch('${API_BASE}/coach/sessions', {
       method:  'POST',
       headers: authHeaders(),
       body: JSON.stringify({
@@ -4537,7 +4543,7 @@ async function loadSessionHistory() {
   listEl.innerHTML = '<div class="cd-sessions-empty" style="padding:12px;">Loading…</div>';
 
   try {
-    const res = await fetch('http://localhost:8000/coach/sessions', {
+    const res = await fetch('${API_BASE}/coach/sessions', {
       headers: authHeaders({})
     });
 
@@ -4612,7 +4618,7 @@ async function updateSessionStatus(sessionId, status, btn) {
   if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
   try {
     const res = await fetch(
-      `http://localhost:8000/coach/sessions/${sessionId}/status?status=${status}`,
+      `${API_BASE}/coach/sessions/${sessionId}/status?status=${status}`,
       { method: 'PATCH', headers: authHeaders({}) }
     );
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -4644,7 +4650,7 @@ async function loadUserSessions() {
   if (emptyEl) emptyEl.style.display = 'none';
 
   try {
-    const res = await fetch(`http://localhost:8000/user/sessions/${userId}`, {
+    const res = await fetch(`${API_BASE}/user/sessions/${userId}`, {
       headers: authHeaders({})
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);

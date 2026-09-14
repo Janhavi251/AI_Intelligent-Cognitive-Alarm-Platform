@@ -1,3 +1,8 @@
+﻿// ── API base URL ─────────────────────────────────────────────
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? '${API_BASE}'
+  : 'https://cognitive-alarm-api.onrender.com';
+
 const takenEmails = ["admin@wellspring.io","coach@wellspring.io"];
 
 function switchTab(tab){
@@ -66,7 +71,7 @@ async function handleSignin(e){
   if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
 
   try {
-    const res  = await fetch('http://localhost:8000/auth/signin', {
+    const res  = await fetch('${API_BASE}/auth/signin', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ email, password })
@@ -108,7 +113,7 @@ async function handleSignup(e){
   if (btn) { btn.disabled = true; btn.textContent = 'Creating account…'; }
 
   try {
-    const res  = await fetch('http://localhost:8000/auth/signup', {
+    const res  = await fetch('${API_BASE}/auth/signup', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ full_name, email, password, role })
@@ -135,5 +140,5 @@ async function handleSignup(e){
 
 // ── Google OAuth ──────────────────────────────────────────────
 function handleOAuth(mode){
-  window.location.href = 'http://localhost:8000/auth/google';
+  window.location.href = '${API_BASE}/auth/google';
 }

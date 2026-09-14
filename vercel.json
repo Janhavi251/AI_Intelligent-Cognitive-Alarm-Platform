@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "cognitive-alarm",
+  "builds": [
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "*.css",  "use": "@vercel/static" },
+    { "src": "*.js",   "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/",            "dest": "/index.html" },
+    { "src": "/dashboard",   "dest": "/dashboard.html" },
+    { "src": "/login",       "dest": "/login.html" },
+    { "src": "/challenge",   "dest": "/challenge.html" },
+    { "handle": "filesystem" }
+  ]
+}
