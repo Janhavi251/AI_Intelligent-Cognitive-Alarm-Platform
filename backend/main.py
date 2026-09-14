@@ -2028,10 +2028,24 @@ def get_recommendations(user_id: int, db: Session = Depends(get_db), current_use
 
 
 
+from fastapi.responses import FileResponse
+
 # ── Health check ─────────────────────────────────────────────
+@app.get("/api")
+def api_status():
+    return {"status": "Wellspring API is running"}
+
 @app.get("/")
 def root():
+    for p in [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "index.html")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "index.html")),
+        os.path.abspath("index.html")
+    ]:
+        if os.path.exists(p):
+            return FileResponse(p)
     return {"status": "Wellspring API is running"}
+
 
 
 # ══════════════════════════════════════════════════════════════
