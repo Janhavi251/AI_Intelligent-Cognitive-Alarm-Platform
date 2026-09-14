@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const userId = (user && user.id) ? parseInt(user.id) : 1;
-        const res = await fetch('${API_BASE}/alarms', {
+        const res = await fetch(`${API_BASE}/alarms`, {
           method: 'POST',
           headers: authHeaders(),
           body: JSON.stringify({
@@ -2146,7 +2146,7 @@ async function submitActiveAlarmAnswer() {
   let verifyRes = null;
   try {
     const userId = (user && user.id) ? parseInt(user.id) : 1;
-    const res = await fetch('${API_BASE}/challenges/verify', {
+    const res = await fetch(`${API_BASE}/challenges/verify`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({
@@ -2274,7 +2274,7 @@ async function submitModalWakefulness(score, btnElement, statusId = 'cm-wake-sta
   const userId = (user && user.id) ? parseInt(user.id) : 1;
 
   try {
-    const res = await fetch('${API_BASE}/challenges/wakefulness', {
+    const res = await fetch(`${API_BASE}/challenges/wakefulness`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({
@@ -2375,7 +2375,7 @@ function closeActiveAlarmModal() {
     ? Math.round((Date.now() - (activeAlarmStartTime || Date.now())) / 1000)
     : 0;
 
-  fetch('${API_BASE}/alarm-logs/dismiss', {
+  fetch(`${API_BASE}/alarm-logs/dismiss`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify({
@@ -2451,7 +2451,7 @@ function toggleHabitItem(itemEl) {
   const nowCompleted = itemEl.classList.contains('completed');
   const userId = (user && user.id) ? parseInt(user.id) : 1;
 
-  fetch('${API_BASE}/habits/log', {
+  fetch(`${API_BASE}/habits/log`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify({ user_id: userId, habit_name: habitName, completed: nowCompleted })
@@ -2991,7 +2991,7 @@ async function loadCoachDashboard() {
 
 async function loadCoachBehaviorInsights() {
   try {
-    const res  = await fetch('${API_BASE}/coach/behavior-insights', { headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/coach/behavior-insights`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
 
@@ -3016,7 +3016,7 @@ async function loadCoachHabits() {
   const listEl = document.getElementById('coach-habit-list');
   if (!listEl) return;
   try {
-    const res  = await fetch('${API_BASE}/coach/habit-analytics', { headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/coach/habit-analytics`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
     const habits = data.habits || [];
@@ -3044,7 +3044,7 @@ async function loadCoachHabits() {
 
 async function loadCoachSleep() {
   try {
-    const res  = await fetch('${API_BASE}/coach/sleep-trends', { headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/coach/sleep-trends`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
 
@@ -3094,7 +3094,7 @@ async function loadCoachProgress() {
   if (!tbody) return;
 
   try {
-    const res  = await fetch('${API_BASE}/coach/progress-monitoring', { headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/coach/progress-monitoring`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
     const users = data.users || [];
@@ -3150,7 +3150,7 @@ async function loadAdminDashboard() {
 
 async function loadAdminAnalytics() {
   try {
-    const res  = await fetch('${API_BASE}/admin/platform-analytics', { headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/admin/platform-analytics`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
 
@@ -3178,7 +3178,7 @@ async function loadAdminUsers() {
   if (!tbody) return;
 
   try {
-    const res  = await fetch('${API_BASE}/admin/users', { headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/admin/users`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const users = await res.json();
 
@@ -3353,7 +3353,7 @@ async function loadAdminReports() {
   };
 
   try {
-    const res  = await fetch('${API_BASE}/admin/system-reports', { headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/admin/system-reports`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
 
@@ -3436,7 +3436,7 @@ async function loadAdminRecLog() {
   if (!logEl) return;
 
   try {
-    const res  = await fetch('${API_BASE}/admin/recommendation-log', { headers: authHeaders({}) });
+    const res  = await fetch(`${API_BASE}/admin/recommendation-log`, { headers: authHeaders({}) });
     if (!res.ok) throw new Error();
     const data = await res.json();
     const events = data.events || [];
@@ -3480,7 +3480,7 @@ async function loadNotifications() {
     // Fetch user-specific notifications + global admin announcements in parallel
     const [userRes, adminRes] = await Promise.allSettled([
       fetch(`${API_BASE}/notifications/${userId}`, { headers: authHeaders({}) }),
-      fetch('${API_BASE}/admin/announcements', { headers: authHeaders({}) })
+      fetch(`${API_BASE}/admin/announcements`, { headers: authHeaders({}) })
     ]);
 
     let data = { notifications: [], unread: 0, high_priority: 0, generated_at: new Date().toISOString() };
@@ -3741,7 +3741,7 @@ async function sendAdminAnnouncement() {
   if (statusEl) { statusEl.textContent = 'Sending...'; statusEl.style.color = '#64748b'; }
 
   try {
-    const res = await fetch('${API_BASE}/admin/announcements', {
+    const res = await fetch(`${API_BASE}/admin/announcements`, {
       method:  'POST',
       headers: authHeaders(),
       body:    JSON.stringify({ title, body, priority, icon })
@@ -4159,7 +4159,7 @@ async function sendPersonalNotification() {
   pnSetStatus('', '');
 
   try {
-    const res = await fetch('${API_BASE}/admin/notifications/personal', {
+    const res = await fetch(`${API_BASE}/admin/notifications/personal`, {
       method:  'POST',
       headers: authHeaders(),
       body:    JSON.stringify({
@@ -4225,7 +4225,7 @@ async function loadPersonalNotifHistory() {
   listEl.innerHTML = '<div class="pn-history-loading">Loading…</div>';
 
   try {
-    const res = await fetch('${API_BASE}/admin/notifications/personal', {
+    const res = await fetch(`${API_BASE}/admin/notifications/personal`, {
       headers: authHeaders({})
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -4299,7 +4299,7 @@ async function loadCoachDirectory() {
   listEl.innerHTML = '<div class="cd-loading">Loading client directory…</div>';
 
   try {
-    const res = await fetch('${API_BASE}/coach/client-directory', {
+    const res = await fetch(`${API_BASE}/coach/client-directory`, {
       headers: authHeaders({})
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -4491,7 +4491,7 @@ async function scheduleSession() {
   cdSetSchedStatus('', '');
 
   try {
-    const res = await fetch('${API_BASE}/coach/sessions', {
+    const res = await fetch(`${API_BASE}/coach/sessions`, {
       method:  'POST',
       headers: authHeaders(),
       body: JSON.stringify({
@@ -4541,7 +4541,7 @@ async function loadSessionHistory() {
   listEl.innerHTML = '<div class="cd-sessions-empty" style="padding:12px;">Loading…</div>';
 
   try {
-    const res = await fetch('${API_BASE}/coach/sessions', {
+    const res = await fetch(`${API_BASE}/coach/sessions`, {
       headers: authHeaders({})
     });
 

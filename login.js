@@ -1,4 +1,4 @@
-﻿// ── API base URL ─────────────────────────────────────────────
+// ── API base URL ─────────────────────────────────────────────
 const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000' : '';
 
 const takenEmails = ["admin@wellspring.io","coach@wellspring.io"];
@@ -69,7 +69,7 @@ async function handleSignin(e){
   if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
 
   try {
-    const res  = await fetch('${API_BASE}/auth/signin', {
+    const res  = await fetch(`${API_BASE}/auth/signin`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ email, password })
@@ -111,7 +111,7 @@ async function handleSignup(e){
   if (btn) { btn.disabled = true; btn.textContent = 'Creating account…'; }
 
   try {
-    const res  = await fetch('${API_BASE}/auth/signup', {
+    const res  = await fetch(`${API_BASE}/auth/signup`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ full_name, email, password, role })
@@ -138,5 +138,5 @@ async function handleSignup(e){
 
 // ── Google OAuth ──────────────────────────────────────────────
 function handleOAuth(mode){
-  window.location.href = '${API_BASE}/auth/google';
+  window.location.href = `${API_BASE}/auth/google`;
 }
