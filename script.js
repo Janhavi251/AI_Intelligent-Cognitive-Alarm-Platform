@@ -1,7 +1,8 @@
 ﻿// ── API base URL ─────────────────────────────────────────────
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? '${API_BASE}'
-  : 'https://cognitive-alarm-api.onrender.com';
+// localhost → local backend | production Vercel → same domain (empty string)
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:8000'
+  : '';
 
 const takenEmails = ["admin@wellspring.io", "coach@wellspring.io"];
 

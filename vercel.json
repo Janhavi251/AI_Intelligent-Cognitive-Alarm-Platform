@@ -2,15 +2,45 @@
   "version": 2,
   "name": "cognitive-alarm",
   "builds": [
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "*.css",  "use": "@vercel/static" },
-    { "src": "*.js",   "use": "@vercel/static" }
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": { "maxLambdaSize": "50mb" }
+    },
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.{css,js,png,ico,svg,webmanifest}",
+      "use": "@vercel/static"
+    }
   ],
   "routes": [
-    { "src": "/",            "dest": "/index.html" },
-    { "src": "/dashboard",   "dest": "/dashboard.html" },
-    { "src": "/login",       "dest": "/login.html" },
-    { "src": "/challenge",   "dest": "/challenge.html" },
+    { "src": "/api/(.*)", "dest": "api/index.py" },
+    { "src": "/health",   "dest": "api/index.py" },
+    { "src": "/auth/(.*)", "dest": "api/index.py" },
+    { "src": "/alarms(.*)", "dest": "api/index.py" },
+    { "src": "/challenges(.*)", "dest": "api/index.py" },
+    { "src": "/habits(.*)",     "dest": "api/index.py" },
+    { "src": "/scoring(.*)",    "dest": "api/index.py" },
+    { "src": "/analytics(.*)",  "dest": "api/index.py" },
+    { "src": "/achievements(.*)", "dest": "api/index.py" },
+    { "src": "/recommendations(.*)", "dest": "api/index.py" },
+    { "src": "/notifications(.*)",   "dest": "api/index.py" },
+    { "src": "/reports(.*)",         "dest": "api/index.py" },
+    { "src": "/alarm-logs(.*)",      "dest": "api/index.py" },
+    { "src": "/coach(.*)",           "dest": "api/index.py" },
+    { "src": "/admin(.*)",           "dest": "api/index.py" },
+    { "src": "/user(.*)",            "dest": "api/index.py" },
+    { "src": "/debug(.*)",           "dest": "api/index.py" },
+    { "src": "/",                    "dest": "index.html" },
+    { "src": "/dashboard",           "dest": "dashboard.html" },
+    { "src": "/login",               "dest": "login.html" },
+    { "src": "/challenge",           "dest": "challenge.html" },
     { "handle": "filesystem" }
-  ]
+  ],
+  "env": {
+    "PYTHONPATH": "/var/task/backend"
+  }
 }

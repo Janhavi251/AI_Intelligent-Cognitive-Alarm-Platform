@@ -1,8 +1,6 @@
-﻿// ── API base URL — change this once for all endpoints ────────
-// Set to your Render backend URL for production
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? '${API_BASE}'
-  : 'https://cognitive-alarm-api.onrender.com';  // ← replace with your actual Render URL
+﻿// ── API base URL ─────────────────────────────────────────────
+// localhost → local backend | Vercel production → same domain (empty = relative URLs)
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000' : '';
 
 // ── Read token from URL if coming from Google OAuth ──────────
 const urlParams = new URLSearchParams(window.location.search);

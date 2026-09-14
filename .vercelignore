@@ -1,0 +1,10 @@
+# Exclude files that don't need to be deployed to Vercel
+backend/__pycache__
+backend/*.pyc
+backend/.env
+**/__pycache__
+**/*.pyc
+**/*.pyo
+.git
+.gitignore
+*.md
