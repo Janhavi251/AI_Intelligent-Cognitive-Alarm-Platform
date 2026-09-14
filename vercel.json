@@ -1,47 +1,26 @@
 {
-  "version": 2,
-  "name": "cognitive-alarm",
-  "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": "backend/**"
-      }
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.{css,js,png,ico,svg}",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    { "src": "/api/(.*)",            "dest": "api/index.py" },
-    { "src": "/health",              "dest": "api/index.py" },
-    { "src": "/auth/(.*)",           "dest": "api/index.py" },
-    { "src": "/alarms(.*)",          "dest": "api/index.py" },
-    { "src": "/challenges(.*)",      "dest": "api/index.py" },
-    { "src": "/habits(.*)",          "dest": "api/index.py" },
-    { "src": "/scoring(.*)",         "dest": "api/index.py" },
-    { "src": "/analytics(.*)",       "dest": "api/index.py" },
-    { "src": "/achievements(.*)",    "dest": "api/index.py" },
-    { "src": "/recommendations(.*)", "dest": "api/index.py" },
-    { "src": "/notifications(.*)",   "dest": "api/index.py" },
-    { "src": "/reports(.*)",         "dest": "api/index.py" },
-    { "src": "/alarm-logs(.*)",      "dest": "api/index.py" },
-    { "src": "/coach(.*)",           "dest": "api/index.py" },
-    { "src": "/admin(.*)",           "dest": "api/index.py" },
-    { "src": "/user(.*)",            "dest": "api/index.py" },
-    { "src": "/debug(.*)",           "dest": "api/index.py" },
-    { "src": "/docs",                "dest": "api/index.py" },
-    { "src": "/openapi.json",        "dest": "api/index.py" },
-    { "src": "/",                    "dest": "index.html" },
-    { "src": "/dashboard",           "dest": "dashboard.html" },
-    { "src": "/login",               "dest": "login.html" },
-    { "src": "/challenge",           "dest": "challenge.html" },
-    { "handle": "filesystem" }
+  "rewrites": [
+    { "source": "/api/(.*)",            "destination": "/api/index.py" },
+    { "source": "/health",              "destination": "/api/index.py" },
+    { "source": "/auth/(.*)",           "destination": "/api/index.py" },
+    { "source": "/alarms(.*)",          "destination": "/api/index.py" },
+    { "source": "/challenges(.*)",      "destination": "/api/index.py" },
+    { "source": "/habits(.*)",          "destination": "/api/index.py" },
+    { "source": "/scoring(.*)",         "destination": "/api/index.py" },
+    { "source": "/analytics(.*)",       "destination": "/api/index.py" },
+    { "source": "/achievements(.*)",    "destination": "/api/index.py" },
+    { "source": "/recommendations(.*)", "destination": "/api/index.py" },
+    { "source": "/notifications(.*)",   "destination": "/api/index.py" },
+    { "source": "/reports(.*)",         "destination": "/api/index.py" },
+    { "source": "/alarm-logs(.*)",      "destination": "/api/index.py" },
+    { "source": "/coach(.*)",           "destination": "/api/index.py" },
+    { "source": "/admin(.*)",           "destination": "/api/index.py" },
+    { "source": "/user(.*)",            "destination": "/api/index.py" },
+    { "source": "/debug(.*)",           "destination": "/api/index.py" },
+    { "source": "/docs",                "destination": "/api/index.py" },
+    { "source": "/openapi.json",        "destination": "/api/index.py" },
+    { "source": "/dashboard",           "destination": "/dashboard.html" },
+    { "source": "/login",               "destination": "/login.html" },
+    { "source": "/challenge",           "destination": "/challenge.html" }
   ]
 }

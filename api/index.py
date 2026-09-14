@@ -13,9 +13,15 @@ for path in [_api_backend, _root_backend, _root, _here]:
         sys.path.insert(0, path)
 
 try:
-    from backend.main import app  # noqa: F401
+    from api.backend.main import app as fastapi_app
 except ImportError:
-    from main import app  # noqa: F401
+    try:
+        from backend.main import app as fastapi_app
+    except ImportError:
+        from main import app as fastapi_app
+
+app = fastapi_app
+
 
 
 
