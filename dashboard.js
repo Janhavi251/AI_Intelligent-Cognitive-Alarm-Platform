@@ -1,4 +1,4 @@
-﻿// ── API base URL ─────────────────────────────────────────────
+// ── API base URL ─────────────────────────────────────────────
 // localhost → local backend | Vercel production → same domain (empty = relative URLs)
 const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000' : '';
 
@@ -46,7 +46,7 @@ async function apiFetch(url, options) {
 function signOut() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = 'index.html';
+    window.location.href = 'login.html';
 }
 
 function switchRole(roleTarget) {
