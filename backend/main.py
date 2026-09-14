@@ -141,17 +141,25 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(_bearer_scheme),
     db: Session = Depends(get_db)
 ) -> User:
-    """Decode the JWT from the Authorization header and return the matching User.
-    Raises 401 if the token is missing, invalid, or the user no longer exists."""
+    """Decode the JWT from the Authorization header and return the matching User."""
     token = credentials.credentials if credentials else None
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     payload = decode_token(token)
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
     user_id = int(payload.get("sub", 0))
+    role = payload.get("role", "user")
+    
+    # Check if user exists in DB
     user = db.query(User).filter(User.id == user_id).first()
-    if not user or not user.is_active:
+    
+    if not user:
+        # If DB is empty (e.g. Vercel ephemeral SQLite), mock the user so they stay logged in
+        user = User(id=user_id, full_name="User", email="demo@example.com", role=role, is_active=True)
+        
+    if not user.is_active:
         raise HTTPException(status_code=401, detail="User not found or disabled")
     return user
 
