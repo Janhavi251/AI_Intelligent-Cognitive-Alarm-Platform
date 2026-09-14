@@ -1,26 +1,98 @@
 {
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    }
+  ],
   "rewrites": [
-    { "source": "/api/(.*)",            "destination": "/api/index.py" },
-    { "source": "/health",              "destination": "/api/index.py" },
-    { "source": "/auth/(.*)",           "destination": "/api/index.py" },
-    { "source": "/alarms(.*)",          "destination": "/api/index.py" },
-    { "source": "/challenges(.*)",      "destination": "/api/index.py" },
-    { "source": "/habits(.*)",          "destination": "/api/index.py" },
-    { "source": "/scoring(.*)",         "destination": "/api/index.py" },
-    { "source": "/analytics(.*)",       "destination": "/api/index.py" },
-    { "source": "/achievements(.*)",    "destination": "/api/index.py" },
-    { "source": "/recommendations(.*)", "destination": "/api/index.py" },
-    { "source": "/notifications(.*)",   "destination": "/api/index.py" },
-    { "source": "/reports(.*)",         "destination": "/api/index.py" },
-    { "source": "/alarm-logs(.*)",      "destination": "/api/index.py" },
-    { "source": "/coach(.*)",           "destination": "/api/index.py" },
-    { "source": "/admin(.*)",           "destination": "/api/index.py" },
-    { "source": "/user(.*)",            "destination": "/api/index.py" },
-    { "source": "/debug(.*)",           "destination": "/api/index.py" },
-    { "source": "/docs",                "destination": "/api/index.py" },
-    { "source": "/openapi.json",        "destination": "/api/index.py" },
-    { "source": "/dashboard",           "destination": "/dashboard.html" },
-    { "source": "/login",               "destination": "/login.html" },
-    { "source": "/challenge",           "destination": "/challenge.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py?__vpath=/api/$1"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/index.py?__vpath=/health"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "/api/index.py?__vpath=/auth/$1"
+    },
+    {
+      "source": "/alarms(.*)",
+      "destination": "/api/index.py?__vpath=/alarms$1"
+    },
+    {
+      "source": "/challenges(.*)",
+      "destination": "/api/index.py?__vpath=/challenges$1"
+    },
+    {
+      "source": "/habits(.*)",
+      "destination": "/api/index.py?__vpath=/habits$1"
+    },
+    {
+      "source": "/scoring(.*)",
+      "destination": "/api/index.py?__vpath=/scoring$1"
+    },
+    {
+      "source": "/analytics(.*)",
+      "destination": "/api/index.py?__vpath=/analytics$1"
+    },
+    {
+      "source": "/achievements(.*)",
+      "destination": "/api/index.py?__vpath=/achievements$1"
+    },
+    {
+      "source": "/recommendations(.*)",
+      "destination": "/api/index.py?__vpath=/recommendations$1"
+    },
+    {
+      "source": "/notifications(.*)",
+      "destination": "/api/index.py?__vpath=/notifications$1"
+    },
+    {
+      "source": "/reports(.*)",
+      "destination": "/api/index.py?__vpath=/reports$1"
+    },
+    {
+      "source": "/alarm-logs(.*)",
+      "destination": "/api/index.py?__vpath=/alarm-logs$1"
+    },
+    {
+      "source": "/coach(.*)",
+      "destination": "/api/index.py?__vpath=/coach$1"
+    },
+    {
+      "source": "/admin(.*)",
+      "destination": "/api/index.py?__vpath=/admin$1"
+    },
+    {
+      "source": "/user(.*)",
+      "destination": "/api/index.py?__vpath=/user$1"
+    },
+    {
+      "source": "/debug(.*)",
+      "destination": "/api/index.py?__vpath=/debug$1"
+    },
+    {
+      "source": "/docs",
+      "destination": "/api/index.py?__vpath=/docs"
+    },
+    {
+      "source": "/openapi.json",
+      "destination": "/api/index.py?__vpath=/openapi.json"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    },
+    {
+      "source": "/challenge",
+      "destination": "/challenge.html"
+    }
   ]
 }

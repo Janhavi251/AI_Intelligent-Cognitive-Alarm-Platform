@@ -173,9 +173,13 @@ class SigninRequest(BaseModel):
 
 @app.middleware("http")
 async def vercel_path_rewrite_middleware(request: Request, call_next):
-    path = request.scope.get("path", "")
-    if path.startswith("/api/index.py"):
-        request.scope["path"] = path.replace("/api/index.py", "", 1) or "/"
+    vpath = request.query_params.get("__vpath")
+    if vpath:
+        request.scope["path"] = vpath
+    else:
+        path = request.scope.get("path", "")
+        if path.startswith("/api/index.py"):
+            request.scope["path"] = path.replace("/api/index.py", "", 1) or "/"
     return await call_next(request)
 
 @app.post("/auth/signup")
