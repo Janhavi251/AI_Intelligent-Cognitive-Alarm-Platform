@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Administrator Dashboard | CognitiveAlarm
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <aside class="dashboard-sidebar">
+
+        <div class="dashboard-logo">
+            CognitiveAlarm
+        </div>
+
+        <nav class="dashboard-menu">
+
+            <a href="#" class="active">
+                🏠 Dashboard
+            </a>
+
+            <a href="#">
+                👥 User Management
+            </a>
+
+            <a href="#">
+                🧠 Challenge Library
+            </a>
+
+            <a href="#">
+                📊 Platform Analytics
+            </a>
+
+            <a href="#">
+                📄 Reports
+            </a>
+
+            <a href="#">
+                ⚙️ Settings
+            </a>
+
+        </nav>
+
+        <a href="/logout" class="logout-link">
+            Logout
+        </a>
+
+    </aside>
+
+
+    <main class="dashboard-content">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <p class="section-tag">
+                    ADMINISTRATION
+                </p>
+
+                <h1>
+                    Welcome, {{ user.full_name }}
+                </h1>
+
+                <p>
+                    CognitiveAlarm system overview.
+                </p>
+
+            </div>
+
+            <div class="user-avatar">
+                {{ user.full_name[0] | upper }}
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-stats">
+
+            <div class="stat-card">
+                <span>👥</span>
+                <p>Total Users</p>
+                <h2>{{ total_users }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>🟢</span>
+                <p>Active Users</p>
+                <h2>{{ active_users }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>🧠</span>
+                <p>Challenges</p>
+                <h2>0</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>📊</span>
+                <p>Alarm Sessions</p>
+                <h2>0</h2>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+            <section class="dashboard-panel">
+
+                <h2>
+                    Platform Overview
+                </h2>
+
+                <div class="empty-state">
+
+                    <div>📊</div>
+
+                    <h3>
+                        Analytics are being collected
+                    </h3>
+
+                    <p>
+                        Platform usage, alarm completion
+                        and behavioral statistics will
+                        appear here.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <section class="dashboard-panel">
+
+                <h2>
+                    System Status
+                </h2>
+
+                <div class="progress-item">
+
+                    <div>
+                        <span>FastAPI Backend</span>
+                        <strong>Online</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="progress-item">
+
+                    <div>
+                        <span>PostgreSQL Database</span>
+                        <strong>Connected</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="progress-item">
+
+                    <div>
+                        <span>Authentication</span>
+                        <strong>JWT</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+{% endblock %}

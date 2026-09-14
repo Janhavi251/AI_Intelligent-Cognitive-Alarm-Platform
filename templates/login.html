@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Choose Login | CognitiveAlarm
+{% endblock %}
+
+
+{% block content %}
+
+<div class="auth-page">
+
+    <div class="auth-header">
+
+        <a href="/" class="back-home">
+            ← Back to Home
+        </a>
+
+        <div class="auth-logo">
+            CognitiveAlarm
+        </div>
+
+        <p class="auth-tag">
+            SECURE ACCESS
+        </p>
+
+        <h1>
+            Welcome Back
+        </h1>
+
+        <p>
+            Select how you want to access the platform.
+        </p>
+
+    </div>
+
+
+    <div class="role-container">
+
+
+        <!-- USER -->
+
+        <a href="/login/user" class="role-card">
+
+            <div class="role-icon">
+                👤
+            </div>
+
+            <h2>
+                User
+            </h2>
+
+            <p>
+                Manage alarms, complete cognitive
+                challenges and track your wake-up habits.
+            </p>
+
+            <span>
+                Continue as User →
+            </span>
+
+        </a>
+
+
+        <!-- WELLNESS COACH -->
+
+        <a href="/login/coach" class="role-card">
+
+            <div class="role-icon">
+                🌿
+            </div>
+
+            <h2>
+                Wellness Coach
+            </h2>
+
+            <p>
+                Monitor user progress, sleep trends
+                and habit adherence.
+            </p>
+
+            <span>
+                Continue as Coach →
+            </span>
+
+        </a>
+
+
+        <!-- ADMIN -->
+
+        <a href="/login/admin" class="role-card">
+
+            <div class="role-icon">
+                🛡️
+            </div>
+
+            <h2>
+                Administrator
+            </h2>
+
+            <p>
+                Manage users, platform analytics,
+                reports and system operations.
+            </p>
+
+            <span>
+                Continue as Admin →
+            </span>
+
+        </a>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

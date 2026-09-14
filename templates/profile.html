@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Profile | CognitiveAlarm
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <aside class="dashboard-sidebar">
+
+        <div class="dashboard-logo">
+            CognitiveAlarm
+        </div>
+
+        <nav class="dashboard-menu">
+
+            <a href="/dashboard/user">
+                🏠 Dashboard
+            </a>
+
+            <a href="#">
+                ⏰ My Alarms
+            </a>
+
+            <a href="#">
+                🧠 Challenges
+            </a>
+
+            <a href="#">
+                🎯 Habits
+            </a>
+
+            <a href="#">
+                📊 Analytics
+            </a>
+
+            <a href="/profile" class="active">
+                👤 Profile
+            </a>
+
+        </nav>
+
+        <a href="/logout" class="logout-link">
+            Logout
+        </a>
+
+    </aside>
+
+
+    <main class="dashboard-content">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <p class="section-tag">
+                    ACCOUNT SETTINGS
+                </p>
+
+                <h1>My Profile</h1>
+
+                <p>
+                    Configure your sleep, wake-up and
+                    cognitive challenge preferences.
+                </p>
+
+            </div>
+
+            <div class="user-avatar">
+                {{ user.full_name[0] | upper }}
+            </div>
+
+        </div>
+
+
+        {% if success %}
+
+        <div class="success-message">
+            {{ success }}
+        </div>
+
+        {% endif %}
+
+
+        {% if error %}
+
+        <div class="error-message">
+            {{ error }}
+        </div>
+
+        {% endif %}
+
+
+        <section class="profile-card">
+
+            <div class="profile-heading">
+
+                <h2>
+                    Basic Information
+                </h2>
+
+                <p>
+                    Your account information.
+                </p>
+
+            </div>
+
+
+            <div class="profile-info-grid">
+
+                <div>
+                    <label>Full Name</label>
+                    <p>{{ user.full_name }}</p>
+                </div>
+
+                <div>
+                    <label>Email Address</label>
+                    <p>{{ user.email }}</p>
+                </div>
+
+                <div>
+                    <label>Account Type</label>
+                    <p>{{ user.role | title }}</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="profile-card">
+
+            <div class="profile-heading">
+
+                <h2>
+                    Wake-Up Preferences
+                </h2>
+
+                <p>
+                    These settings will later help
+                    CognitiveAlarm personalize alarms.
+                </p>
+
+            </div>
+
+
+            <form
+                action="/profile"
+                method="POST"
+                class="profile-form"
+            >
+
+                <div class="profile-form-grid">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Preferred Wake-Up Time
+                        </label>
+
+                        <input
+                            type="time"
+                            name="wake_up_time"
+                            value="{% if profile and profile.wake_up_time %}{{ profile.wake_up_time.strftime('%H:%M') }}{% endif %}"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Typical Sleep Time
+                        </label>
+
+                        <input
+                            type="time"
+                            name="sleep_time"
+                            value="{% if profile and profile.sleep_time %}{{ profile.sleep_time.strftime('%H:%M') }}{% endif %}"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Typical Sleep Duration
+                        </label>
+
+                        <input
+                            type="number"
+                            name="sleep_duration"
+                            min="1"
+                            max="16"
+                            step="0.5"
+                            placeholder="Example: 7.5"
+                            value="{% if profile and profile.sleep_duration %}{{ profile.sleep_duration }}{% endif %}"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Timezone
+                        </label>
+
+                        <select name="timezone">
+
+                            <option
+                                value="Asia/Kolkata"
+                                {% if not profile or profile.timezone == "Asia/Kolkata" %}selected{% endif %}
+                            >
+                                Asia/Kolkata
+                            </option>
+
+                            <option
+                                value="UTC"
+                                {% if profile and profile.timezone == "UTC" %}selected{% endif %}
+                            >
+                                UTC
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Challenge Difficulty
+                        </label>
+
+                        <select name="challenge_difficulty">
+
+                            <option
+                                value="easy"
+                                {% if profile and profile.challenge_difficulty == "easy" %}selected{% endif %}
+                            >
+                                Easy
+                            </option>
+
+                            <option
+                                value="medium"
+                                {% if not profile or profile.challenge_difficulty == "medium" %}selected{% endif %}
+                            >
+                                Medium
+                            </option>
+
+                            <option
+                                value="hard"
+                                {% if profile and profile.challenge_difficulty == "hard" %}selected{% endif %}
+                            >
+                                Hard
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Habit Preference
+                        </label>
+
+                        <select name="habit_preference">
+
+                            <option value="">
+                                Select preference
+                            </option>
+
+                            <option
+                                value="exercise"
+                                {% if profile and profile.habit_preference == "exercise" %}selected{% endif %}
+                            >
+                                Morning Exercise
+                            </option>
+
+                            <option
+                                value="reading"
+                                {% if profile and profile.habit_preference == "reading" %}selected{% endif %}
+                            >
+                                Reading
+                            </option>
+
+                            <option
+                                value="meditation"
+                                {% if profile and profile.habit_preference == "meditation" %}selected{% endif %}
+                            >
+                                Meditation
+                            </option>
+
+                            <option
+                                value="study"
+                                {% if profile and profile.habit_preference == "study" %}selected{% endif %}
+                            >
+                                Study
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Productivity Goal
+                    </label>
+
+                    <textarea
+                        name="productivity_goal"
+                        rows="4"
+                        placeholder="Example: Wake up by 6:30 AM and study for one hour before college."
+                    >{% if profile and profile.productivity_goal %}{{ profile.productivity_goal }}{% endif %}</textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="profile-save-button"
+                >
+                    Save Preferences
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+{% endblock %}

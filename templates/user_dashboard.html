@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+User Dashboard | CognitiveAlarm
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard-page">
+
+
+    <aside class="dashboard-sidebar">
+
+        <div class="dashboard-logo">
+            CognitiveAlarm
+        </div>
+
+
+        <nav class="dashboard-menu">
+
+            <a href="#" class="active">
+                🏠 Dashboard
+            </a>
+
+            <a href="#">
+                ⏰ My Alarms
+            </a>
+
+            <a href="#">
+                🧠 Challenges
+            </a>
+
+            <a href="#">
+                🎯 Habits
+            </a>
+
+            <a href="#">
+                📊 Analytics
+            </a>
+
+            <a href="/profile">
+    👤 Profile
+</a>
+
+        </nav>
+
+
+        <a href="/logout" class="logout-link">
+    Logout
+</a>
+
+    </aside>
+
+
+
+    <main class="dashboard-content">
+
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <p class="section-tag">
+                    USER DASHBOARD
+                </p>
+
+                <h1>
+                    Welcome, {{ user.full_name }}
+                </h1>
+
+                <p>
+                    Here's your wake-up progress for today.
+                </p>
+
+            </div>
+
+
+            <div class="user-avatar">
+                {{ user.full_name[0] | upper }}
+            </div>
+
+        </div>
+{% if not profile %}
+
+<div class="onboarding-banner">
+
+    <div>
+
+        <strong>
+            Complete your setup
+        </strong>
+
+        <p>
+            Add your wake-up preferences so
+            CognitiveAlarm can personalize your experience.
+        </p>
+
+    </div>
+
+    <a href="/profile">
+        Complete Profile
+    </a>
+
+</div>
+
+{% endif %}
+
+
+        <div class="dashboard-stats">
+
+
+            <div class="stat-card">
+
+    <span>
+        ⏰
+    </span>
+
+    <p>
+        Preferred Wake Time
+    </p>
+
+    <h2>
+
+        {% if profile and profile.wake_up_time %}
+
+            {{ profile.wake_up_time.strftime('%I:%M %p') }}
+
+        {% else %}
+
+            Not Set
+
+        {% endif %}
+
+    </h2>
+
+</div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    🔥
+                </span>
+
+                <p>
+                    Wake-Up Streak
+                </p>
+
+                <h2>
+                    0 Days
+                </h2>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    🎯
+                </span>
+
+                <p>
+                    Habit Score
+                </p>
+
+                <h2>
+                    0%
+                </h2>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    🧠
+                </span>
+
+                <p>
+                    Challenges
+                </p>
+
+                <h2>
+                    0
+                </h2>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="dashboard-grid">
+
+
+            <section class="dashboard-panel">
+
+                <h2>
+                    Today's Alarm
+                </h2>
+
+                <div class="empty-state">
+
+                    <div>
+                        ⏰
+                    </div>
+
+                    <h3>
+                        No alarm scheduled
+                    </h3>
+
+                    <p>
+                        Create your first cognitive alarm
+                        and start building a better
+                        wake-up routine.
+                    </p>
+
+                    <button>
+                        + Set New Alarm
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <section class="dashboard-panel">
+
+                <h2>
+                    Your Progress
+                </h2>
+
+                <div class="progress-item">
+
+                    <div>
+
+                        <span>
+                            Wake-Up Consistency
+                        </span>
+
+                        <strong>
+                            0%
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-bar">
+                        <div style="width: 0%"></div>
+                    </div>
+
+                </div>
+
+
+                <div class="progress-item">
+
+                    <div>
+
+                        <span>
+                            Challenge Completion
+                        </span>
+
+                        <strong>
+                            0%
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-bar">
+                        <div style="width: 0%"></div>
+                    </div>
+
+                </div>
+
+
+                <div class="progress-item">
+
+                    <div>
+
+                        <span>
+                            Sleep Schedule
+                        </span>
+
+                        <strong>
+                            0%
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-bar">
+                        <div style="width: 0%"></div>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+    </main>
+
+
+</div>
+
+{% endblock %}

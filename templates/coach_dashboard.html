@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Wellness Coach Dashboard | CognitiveAlarm
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <aside class="dashboard-sidebar">
+
+        <div class="dashboard-logo">
+            CognitiveAlarm
+        </div>
+
+        <nav class="dashboard-menu">
+
+            <a href="#" class="active">
+                🏠 Dashboard
+            </a>
+
+            <a href="#">
+                👥 Users
+            </a>
+
+            <a href="#">
+                📊 Sleep Trends
+            </a>
+
+            <a href="#">
+                🎯 Habit Progress
+            </a>
+
+            <a href="#">
+                💡 Recommendations
+            </a>
+
+            <a href="#">
+                👤 Profile
+            </a>
+
+        </nav>
+
+        <a href="/logout" class="logout-link">
+            Logout
+        </a>
+
+    </aside>
+
+
+    <main class="dashboard-content">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <p class="section-tag">
+                    WELLNESS COACH
+                </p>
+
+                <h1>
+                    Welcome, {{ user.full_name }}
+                </h1>
+
+                <p>
+                    Monitor user progress and behavioral trends.
+                </p>
+
+            </div>
+
+            <div class="user-avatar">
+                {{ user.full_name[0] | upper }}
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-stats">
+
+            <div class="stat-card">
+                <span>👥</span>
+                <p>Assigned Users</p>
+                <h2>0</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>😴</span>
+                <p>Average Sleep</p>
+                <h2>--</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>🔥</span>
+                <p>Average Streak</p>
+                <h2>0 Days</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>🎯</span>
+                <p>Habit Completion</p>
+                <h2>0%</h2>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+            <section class="dashboard-panel">
+
+                <h2>
+                    User Progress
+                </h2>
+
+                <div class="empty-state">
+
+                    <div>👥</div>
+
+                    <h3>
+                        No users assigned yet
+                    </h3>
+
+                    <p>
+                        User progress and behavioral
+                        information will appear here.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <section class="dashboard-panel">
+
+                <h2>
+                    Behavioral Insights
+                </h2>
+
+                <div class="empty-state">
+
+                    <div>📊</div>
+
+                    <h3>
+                        No data available
+                    </h3>
+
+                    <p>
+                        Sleep trends and habit adherence
+                        will appear as users complete
+                        wake-up sessions.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+{% endblock %}

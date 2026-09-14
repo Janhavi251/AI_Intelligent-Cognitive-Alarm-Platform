@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+{{ role_name }} Login | CognitiveAlarm
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="login-page">
+
+    <div class="login-box">
+
+
+        <a href="/login" class="back-home">
+            ← Choose another role
+        </a>
+
+
+        <div class="auth-logo">
+            CognitiveAlarm
+        </div>
+
+
+        <p class="auth-tag">
+            {{ role_name | upper }} ACCESS
+        </p>
+
+
+        <h1>
+            {{ role_name }} Login
+        </h1>
+
+
+        <p class="login-subtitle">
+
+            Sign in to access your
+            {{ role_name }} dashboard.
+
+        </p>
+
+{% if error %}
+
+<div class="error-message">
+    {{ error }}
+</div>
+
+{% endif %}
+        <form
+    class="login-form"
+    method="POST"
+    action="/login/{{ role }}"
+>
+
+
+            <div class="form-group">
+
+                <label>
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-options">
+
+                <label class="remember">
+
+                    <input type="checkbox">
+
+                    Remember me
+
+                </label>
+
+
+                <a href="#">
+                    Forgot password?
+                </a>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="login-submit"
+            >
+                Sign In
+            </button>
+
+
+        </form>
+
+
+        {% if role == "user" %}
+
+        <p class="register-text">
+
+            New to CognitiveAlarm?
+
+            <a href="/register">
+                Create an account
+            </a>
+        </p>
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}
