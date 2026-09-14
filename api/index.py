@@ -1,18 +1,20 @@
 import sys
 import os
 
-# Add backend directory to Python path — Vercel runs from /var/task (repo root)
-_backend = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend'))
-if _backend not in sys.path:
-    sys.path.insert(0, _backend)
+# Ensure backend directory and repo root are in Python path for Vercel serverless environment
+_here = os.path.dirname(os.path.abspath(__file__))
+_root = os.path.abspath(os.path.join(_here, '..'))
+_backend = os.path.abspath(os.path.join(_here, '..', 'backend'))
 
-_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if _root not in sys.path:
-    sys.path.insert(0, _root)
+for path in [_backend, _root, _here]:
+    if path not in sys.path:
+        sys.path.insert(0, path)
 
-# Import the FastAPI app — Vercel uses `app` as the ASGI handler
+# Import backend.main explicitly so Vercel dependency builder traces and packages backend files
 try:
+    import backend.main as backend_main
+    app = backend_main.app
+except Exception:
     from main import app  # noqa: F401
-except ImportError:
-    from backend.main import app  # noqa: F401
+
 
