@@ -1,7 +1,9 @@
 import sys
 import os
 
+# FastAPI Serverless Handler for Vercel deployment
 _here = os.path.dirname(os.path.abspath(__file__))
+
 _api_backend = os.path.join(_here, 'backend')
 _root_backend = os.path.abspath(os.path.join(_here, '..', 'backend'))
 _root = os.path.abspath(os.path.join(_here, '..'))
