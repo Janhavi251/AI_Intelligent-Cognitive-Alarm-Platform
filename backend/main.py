@@ -6,6 +6,13 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
+import sys, os
+
+# Ensure backend directory is always on the path (needed for Vercel serverless)
+_here = os.path.dirname(os.path.abspath(__file__))
+if _here not in sys.path:
+    sys.path.insert(0, _here)
+
 try:
     from database import get_db, engine
     from models import User, Alarm, ChallengeLog, HabitLog, Achievement, AlarmLog, Base, CoachSession, PersonalNotification
@@ -24,25 +31,25 @@ import traceback
 import os
 
 app = FastAPI(title="Wellspring API")
-Base.metadata.create_all(bind=engine)
 
 # Ensure database tables & schema migrations
 try:
     Base.metadata.create_all(bind=engine)
     with engine.connect() as conn:
         from sqlalchemy import text
-        conn.execute(text("ALTER TABLE challenge_logs ADD COLUMN IF NOT EXISTS alarm_id INTEGER REFERENCES alarms(id) ON DELETE SET NULL;"))
-        conn.execute(text("ALTER TABLE challenge_logs ADD COLUMN IF NOT EXISTS wakefulness_score INTEGER;"))
-        conn.execute(text("ALTER TABLE alarms ADD COLUMN IF NOT EXISTS question_count INTEGER DEFAULT 2;"))
-        conn.commit()
+        for query in [
+            "ALTER TABLE challenge_logs ADD COLUMN alarm_id INTEGER REFERENCES alarms(id) ON DELETE SET NULL;",
+            "ALTER TABLE challenge_logs ADD COLUMN wakefulness_score INTEGER;",
+            "ALTER TABLE alarms ADD COLUMN question_count INTEGER DEFAULT 2;"
+        ]:
+            try:
+                conn.execute(text(query))
+                conn.commit()
+            except Exception:
+                pass
 except Exception as e:
     print(f"Startup DB migration info: {e}")
 
-# Create new tables (coach_sessions, personal_notifications) if not yet present
-try:
-    Base.metadata.create_all(bind=engine)
-except Exception as e:
-    print(f"Table creation info: {e}")
 
 # ── Middleware ───────────────────────────────────────────────
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY", "changeme"))

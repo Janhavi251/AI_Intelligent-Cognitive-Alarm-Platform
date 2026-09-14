@@ -9,3 +9,7 @@ __pycache__/
 # Editor / IDE settings
 .vscode/
 .idea/
+
+# Local databases
+*.db
+
